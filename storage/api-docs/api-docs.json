@@ -1,0 +1,1001 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Каталог товаров",
+        "description": "Полноценное REST API для работы с продуктами",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://lara2602.local",
+            "description": "Local"
+        }
+    ],
+    "paths": {
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Получить список продуктов",
+                "description": "Возвращает список продуктов с пагинацией",
+                "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество элементов на странице (макс. 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по названию или описанию",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Поле для сортировки",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "id",
+                            "enum": [
+                                "id",
+                                "name",
+                                "price",
+                                "created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Порядок сортировки",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PaginatedProductResponse"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Создать новый продукт",
+                "description": "Создает новый продукт и возвращает его данные",
+                "operationId": "785644b7d7dd38af4b51dafd0fbc1b6d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Продукт успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Продукт успешно создан"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Получить продукт по ID",
+                "description": "Получить один продукт",
+                "operationId": "c87fb2e4d617e7b36c712cad358acdb8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID продукта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Продукт не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Обновить продукт",
+                "description": "Обновляет данные продукта и возвращает обновленный продукт",
+                "operationId": "416e4959a3919547eb609d87e3db9135",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID продукта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Продукт успешно обновлен"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Продукт не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Удалить продукт",
+                "description": "Выполняет мягкое удаление продукта",
+                "operationId": "b49ce9f3cb168b233245548fb4ef36d3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID продукта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно удален",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Продукт успешно удален"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Продукт не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Частично обновить продукт",
+                "description": "Частично обновляет данные продукта",
+                "operationId": "7b6a99d3d6d5c75a1ef063b213e8d068",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID продукта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProductRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Продукт не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/{id}/restore": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Восстановить удаленный продукт",
+                "description": "Восстанавливает мягко удаленный продукт",
+                "operationId": "1e883b576cb4fb5828af8a43f7f5d58d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID продукта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно восстановлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Продукт не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/{id}/force": {
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Полное удаление продукта",
+                "description": "Полностью удаляет продукт из базы данных (включая мягко удаленные)",
+                "operationId": "1429e5a76368d1bac2c924850890d113",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID продукта",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт полностью удален",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Продукт не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CreateProductRequest": {
+                "required": [
+                    "name",
+                    "price"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Новый продукт"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Описание нового продукта",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0,
+                        "example": 99.99
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProductRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Обновленное название",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Обновленное описание",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0,
+                        "example": 199.99,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ApiResponse": {
+                "description": "Базовый формат ответа API",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "SuccessResponse": {
+                "description": "Успешный ответ",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "description": "Ответ с ошибкой",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 400
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "description": "Ошибка валидации",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Ошибка валидации"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 422
+                    }
+                },
+                "type": "object"
+            },
+            "NotFoundError": {
+                "description": "Ресурс не найден",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Ресурс не найден"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": "{}"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 404
+                    }
+                },
+                "type": "object"
+            },
+            "ServerError": {
+                "description": "Внутренняя ошибка сервера",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Внутренняя ошибка сервера"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": "{}"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 500
+                    }
+                },
+                "type": "object"
+            },
+            "UnauthorizedError": {
+                "description": "Ошибка авторизации",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": "{}"
+                    }
+                },
+                "type": "object"
+            },
+            "ForbiddenError": {
+                "description": "Доступ запрещен",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Forbidden"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": "{}"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginationLinks": {
+                "description": "Ссылки для навигации по страницам",
+                "properties": {
+                    "first": {
+                        "description": "Ссылка на первую страницу",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://api.example.com/api/products?page=1",
+                        "nullable": true
+                    },
+                    "last": {
+                        "description": "Ссылка на последнюю страницу",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://api.example.com/api/products?page=10",
+                        "nullable": true
+                    },
+                    "prev": {
+                        "description": "Ссылка на предыдущую страницу",
+                        "type": "string",
+                        "format": "uri",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "next": {
+                        "description": "Ссылка на следующую страницу",
+                        "type": "string",
+                        "format": "uri",
+                        "example": "http://api.example.com/api/products?page=2",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "PaginationMeta": {
+                "description": "Пагинационная мета-информация",
+                "properties": {
+                    "current_page": {
+                        "description": "Текущая страница",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "from": {
+                        "description": "Номер первого элемента на текущей странице",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "to": {
+                        "description": "Номер последнего элемента на текущей странице",
+                        "type": "integer",
+                        "example": 15,
+                        "nullable": true
+                    },
+                    "per_page": {
+                        "description": "Количество элементов на одной странице",
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "total": {
+                        "description": "Общее количество элементов",
+                        "type": "integer",
+                        "example": 142
+                    },
+                    "last_page": {
+                        "description": "Последняя доступная страница",
+                        "type": "integer",
+                        "example": 10
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedProductResponse": {
+                "description": "Пагинированный список продуктов",
+                "properties": {
+                    "data": {
+                        "description": "Массив продуктов",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProductResource"
+                        }
+                    },
+                    "links": {
+                        "$ref": "#/components/schemas/PaginationLinks"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductResource": {
+                "description": "Продукт в ответе API",
+                "required": [
+                    "id",
+                    "name",
+                    "price"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Ноутбук HP"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Мощный ноутбук для работы",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 899.99
+                    },
+                    "price_formatted": {
+                        "description": "Отформатированная цена",
+                        "type": "string",
+                        "example": "899.99"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    },
+                    "links": {
+                        "properties": {
+                            "self": {
+                                "type": "string",
+                                "format": "uri",
+                                "example": "http://api.example.com/api/products/1"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductSuccessResponse": {
+                "description": "Успешный ответ с продуктом",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ProductResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Продукт получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "ProductsListSuccessResponse": {
+                "description": "Успешный ответ со списком продуктов",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PaginatedProductResponse"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Список продуктов получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "ProductCreatedResponse": {
+                "description": "Продукт успешно создан",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/ProductResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Продукт успешно создан"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 201
+                    }
+                },
+                "type": "object"
+            },
+            "Product": {
+                "description": "Модель продукта",
+                "required": [
+                    "id",
+                    "name",
+                    "price"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Ноутбук HP"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Мощный ноутбук для работы и игр",
+                        "nullable": true
+                    },
+                    "price": {
+                        "description": "Цена в рублях",
+                        "type": "number",
+                        "format": "float",
+                        "example": 899.99
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Products",
+            "description": "Products"
+        }
+    ]
+}
