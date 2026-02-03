@@ -1,0 +1,77 @@
+
+networks:
+  laravel:
+    external: true
+
+services:
+
+  2602laravel_test:
+    container_name: 2602laravel_test
+    networks:
+      - laravel
+    build:
+      context: .
+      dockerfile: docker.2602laravel.Dockerfile
+    working_dir: ${FOLDER_2602LARAVEL_TEST_SERV}
+    environment:
+      - PHPGROUP=www-data
+      - PHPUSER=www-data
+      - FOLDER=${FOLDER_2602LARAVEL_TEST_SERV}
+    restart: unless-stopped
+    volumes:
+      - '${FOLDER_2602LARAVEL_TEST}:${FOLDER_2602LARAVEL_TEST_SERV}'
+
+#  2602laravel-queue:
+#    container_name: 2602laravel-queue
+#    depends_on:
+#      - 2602laravel_test
+#    networks:
+#      - laravel
+#    build:
+#      context: .
+#      dockerfile: docker.2602laravel.Dockerfile
+#    working_dir: ${FOLDER_2602LARAVEL_TEST_SERV}
+#    environment:
+#      - PHPGROUP=www-data
+#      - PHPUSER=www-data
+#      - FOLDER=${FOLDER_2503MASTER_SERV}
+#    restart: unless-stopped
+#    volumes:
+#      - '${FOLDER_2602LARAVEL_TEST}:${FOLDER_2602LARAVEL_TEST_SERV}'
+#    command: >
+#      sh -c "
+#        cd ${FOLDER_2602LARAVEL_TEST} &&
+#        php artisan queue:work database --queue=default,notifications --sleep=3 --tries=3 --daemon
+#      "
+#
+#  2602laravel-scheduler:
+#    container_name: 2602laravel-scheduler
+#    depends_on:
+#      - 2602laravel
+#    networks:
+#      - laravel
+#    build:
+#      context: .
+#      dockerfile: docker.2602laravel.Dockerfile
+#    working_dir: ${FOLDER_2503MASTER_SERV}
+#    environment:
+#      - PHPGROUP=www-data
+#      - PHPUSER=www-data
+#      - FOLDER=${FOLDER_2503MASTER_SERV}
+##    restart: unless-stopped
+#    restart: always
+#    volumes:
+#      - '${FOLDER_2602LARAVEL_TEST}:${FOLDER_2602LARAVEL_TEST_SERV}'
+#    command: >
+#      sh -c "
+#        cd ${FOLDER_2602LARAVEL_TEST_SERV} &&
+#        while true; do php artisan schedule:run; sleep 60; done
+#      "
+#
+##    healthcheck:
+##      test: ["CMD", "curl", "-k", "-f", "https://stn.local"]
+##      interval: 30s
+##      timeout: 10s
+##      retries: 3
+##      start_period: 10s
+
