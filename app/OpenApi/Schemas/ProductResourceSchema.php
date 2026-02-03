@@ -5,9 +5,9 @@ namespace App\OpenApi\Schemas;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: 'Product',
+    schema: 'ProductResource',
     type: 'object',
-    description: 'Модель продукта',
+    description: 'Продукт в ответе API',
     required: ['id', 'name', 'price'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 1),
@@ -16,14 +16,19 @@ use OpenApi\Attributes as OA;
             property: 'description',
             type: 'string',
             nullable: true,
-            example: 'Мощный ноутбук для работы и игр'
+            example: 'Мощный ноутбук для работы'
         ),
         new OA\Property(
             property: 'price',
             type: 'number',
             format: 'float',
-            example: 899.99,
-            description: 'Цена в рублях'
+            example: 899.99
+        ),
+        new OA\Property(
+            property: 'price_formatted',
+            type: 'string',
+            example: '899.99',
+            description: 'Отформатированная цена'
         ),
         new OA\Property(
             property: 'created_at',
@@ -37,6 +42,18 @@ use OpenApi\Attributes as OA;
             format: 'date-time',
             example: '2024-01-15 10:30:00'
         ),
+        new OA\Property(
+            property: 'links',
+            type: 'object',
+            properties: [
+                new OA\Property(
+                    property: 'self',
+                    type: 'string',
+                    format: 'uri',
+                    example: 'http://api.example.com/api/products/1'
+                )
+            ]
+        ),
     ]
 )]
-class ProductSchema {}
+class ProductResourceSchema {}

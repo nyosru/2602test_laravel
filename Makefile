@@ -2,6 +2,10 @@ s:
 	@echo "Генерирую свагер документацию, смотреть тут /api/documentation"
 	php artisan l5-swagger:generate
 
+seed:
+	@printf "\033[37;44m%s\033[0m\n" " clean db and засеиваем рандомными данными базу "
+	php artisan migrate:fresh --seed
+
 dev:
 	@echo "Development environment started"
 	#cp docker-compose.local.yml docker-compose.yml

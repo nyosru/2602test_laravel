@@ -45,6 +45,11 @@ return [
                  */
                 'annotations' => [
                     base_path('app'),
+                    app_path('Http/Controllers'),
+                    app_path('Http/Controllers/Api'),
+                    app_path('Http/Resources'),
+                    app_path('OpenApi/Schemas'),
+                    app_path('OpenApi'),
                 ],
             ],
         ],
