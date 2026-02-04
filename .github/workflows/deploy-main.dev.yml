@@ -1,5 +1,13 @@
 name: Deploy to VPS with Git
 
+
+# Триггеры запуска:
+on:
+  # Автоматический запуск при пуше в main
+  push:
+    branches: [main]
+  workflow_dispatch:
+
 env:
   VPS_HOST: 91.218.230.97
   VPS_USERNAME: root
@@ -8,6 +16,8 @@ env:
   GITHUB_USERNAME: nyosru
   GIT_REPO: 2602test_laravel.git
   DOCKER_CONTAINER: 2602test_laravel
+
+
 
 jobs:
   sms_start:
