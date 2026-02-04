@@ -1,0 +1,141 @@
+name: Deploy to VPS with Git
+
+env:
+  VPS_HOST: 91.218.230.97
+  VPS_USERNAME: root
+  DIR: /home/2602test_laravel
+  GIT_BRANCH: origin/main
+  GITHUB_USERNAME: nyosru
+  GIT_REPO: 2602test_laravel.git
+  DOCKER_CONTAINER: 2602test_laravel
+
+jobs:
+  sms_start:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send deployment start notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: 360209578, phpcat
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🚀🚀🚀 Начинаем деплой ${{ github.repository }}
+            👨🏻‍💻 ${{ github.actor }} (${{ github.run_id }})
+            📝 ${{ github.event.head_commit.message }}
+
+  #  check_commit:
+  #    runs-on: ubuntu-latest
+  #    outputs:
+  #      start_setup: ${{ steps.check.outputs.start_setup }}
+  #    steps:
+  #      - name: Check commit message for start_setup
+  #        id: check
+  #        run: |
+  #          if [[ "${{ github.event.head_commit.message }}" == *"[start_setup+"* ]]; then
+  #            echo "start_setup=true" >> $GITHUB_OUTPUT
+  #          else
+  #            echo "start_setup=false" >> $GITHUB_OUTPUT
+  #          fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    #needs: [sms_start, check_commit]
+    steps:
+      - name: Setup SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ env.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy code to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.VPS_HOST }}
+          username: ${{ env.VPS_USERNAME }}
+          key: ${{ secrets.DEPLOY_KEY_DOCKER24 }}
+          script: |
+            set -e  # Выход при ошибке
+            cd ${{ env.DIR }}
+            git fetch --all
+            git reset --hard ${{ env.GIT_BRANCH }}
+            echo "✅ Код успешно обновлен"
+
+            # Обновление зависимостей
+            docker exec ${{ env.DOCKER_CONTAINER }} composer install --no-dev --optimize-autoloader
+            docker exec ${{ env.DOCKER_CONTAINER }} npm install
+            docker exec ${{ env.DOCKER_CONTAINER }} npm run build
+
+            # Миграции
+            docker exec ${{ env.DOCKER_CONTAINER }} php artisan migrate --force
+
+            # Очистка кеша
+            docker exec ${{ env.DOCKER_CONTAINER }} php artisan optimize:clear
+            docker exec ${{ env.DOCKER_CONTAINER }} php artisan optimize
+
+
+#            cp caddy/prod.Caddyfile caddy/Caddyfile
+#            echo "🔄 Перезагружаем Caddy..."
+#            docker-compose exec -T ${{ env.DOCKER_CONTAINER }} caddy reload --config /etc/caddy/Caddyfile
+#            echo "✅✅ Caddy перезагружен без downtime"
+
+  #            cp docker-compose.prod.yml docker-compose.yml
+  #            docker-compose down --rmi all -v
+  #            docker-compose up -d --build
+  #            echo "✅✅ контейнер перезагружен"
+  # Перезагружаем конфиг Caddy
+  #  update_laravel:
+  #    runs-on: ubuntu-latest
+  #    needs: [check_commit, deploy]
+  #    steps:
+  #      - name: Setup SSH known hosts
+  #        run: |
+  #          mkdir -p ~/.ssh
+  #          ssh-keyscan -H ${{ env.VPS_HOST }} >> ~/.ssh/known_hosts
+
+  #      - name: Update Laravel application
+  #        uses: appleboy/ssh-action@master
+  #        with:
+  #          host: ${{ env.VPS_HOST }}
+  #          username: ${{ env.VPS_USERNAME }}
+  #          key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #          script: |
+  #            set -e
+  #            cd ${{ env.DIR }}
+  #
+  #            # Обновление зависимостей
+  #            docker exec ${{ env.DOCKER_CONTAINER }} composer install --no-dev --optimize-autoloader
+  #            docker exec ${{ env.DOCKER_CONTAINER }} npm install
+  #            docker exec ${{ env.DOCKER_CONTAINER }} npm run build
+  #
+  #            # Миграции
+  #            docker exec ${{ env.DOCKER_CONTAINER }} php artisan migrate --force
+  #
+  #            # Очистка кеша
+  #            docker exec ${{ env.DOCKER_CONTAINER }} php artisan optimize:clear
+  #            docker exec ${{ env.DOCKER_CONTAINER }} php artisan optimize
+  #
+  #            # Начальная настройка (если нужно)
+  #            if [ "${{ needs.check_commit.outputs.start_setup }}" = 'true' ]; then
+  #              echo "🔧 Выполняем начальную настройку..."
+  #              docker exec ${{ env.DOCKER_CONTAINER }} chmod -R 775 storage
+  #              docker exec ${{ env.DOCKER_CONTAINER }} chown -R www-data:www-data storage
+  #              docker exec ${{ env.DOCKER_CONTAINER }} php artisan storage:link
+  #            else
+  #              echo "⏩ Пропускаем начальную настройку"
+  #            fi
+  #
+  #            echo "✅ Laravel приложение обновлено"
+
+  sms_end:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Send deployment success notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: 360209578, phpcat
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🍀🍀🍀 Успешный деплой ${{ github.repository }}
+            👨🏻‍💻 ${{ github.actor }} > ${{ github.run_id }}
+            📝 ${{ github.event.head_commit.message }}
+            🎉 Все задачи выполнены!

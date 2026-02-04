@@ -7,8 +7,12 @@
     },
     "servers": [
         {
+            "url": "https://laravel.test.php-cat.com",
+            "description": "сайт в сети для тестов"
+        },
+        {
             "url": "https://lara2602.local",
-            "description": "Local"
+            "description": "Локальная площадка"
         }
     ],
     "paths": {
