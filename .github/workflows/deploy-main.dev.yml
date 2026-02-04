@@ -17,8 +17,6 @@ env:
   GIT_REPO: 2602test_laravel.git
   DOCKER_CONTAINER: 2602test_laravel
 
-
-
 jobs:
   sms_start:
     runs-on: ubuntu-latest
