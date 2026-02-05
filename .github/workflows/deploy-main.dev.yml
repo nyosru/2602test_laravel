@@ -40,6 +40,10 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ env.VPS_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Check syntax
+        run: |
+          docker exec ${{ env.DOCKER_CONTAINER }} php -l app/Http/Middleware/EncryptCookies.php || true
+
       - name: Deploy code to VPS
         uses: appleboy/ssh-action@master
         with:
