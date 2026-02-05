@@ -55,8 +55,8 @@ jobs:
 
             # Обновление зависимостей
             docker exec ${{ env.DOCKER_CONTAINER }} composer install --no-dev --optimize-autoloader
-            docker exec ${{ env.DOCKER_CONTAINER }} npm install
-            docker exec ${{ env.DOCKER_CONTAINER }} npm run build
+            #docker exec ${{ env.DOCKER_CONTAINER }} npm install
+            #docker exec ${{ env.DOCKER_CONTAINER }} npm run build
 
             # Миграции
             docker exec ${{ env.DOCKER_CONTAINER }} php artisan migrate --force
