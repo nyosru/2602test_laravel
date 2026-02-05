@@ -15,13 +15,24 @@ class ProductController extends Controller
 {
 
     use \App\Traits\ApiResponse;
-
     protected $repository;
 
 
     public function __construct(ProductRepositoryInterface $repository)
     {
         $this->repository = $repository;
+
+//        $this->middleware('auth:sanctum')->except([
+//            'indexPublic',
+//            // 'showPublic', если есть
+//        ]);
+//        $this->middleware('auth:sanctum')->only([
+//            'store', 'update', 'destroy', 'restore', 'forceDestroy'
+//        ]);
+        // Применяем middleware авторизации ко всем методам, кроме публичных
+        $this->middleware('auth:sanctum')->except([
+            'indexPublic'
+        ]);
     }
 
     /**
@@ -32,6 +43,7 @@ class ProductController extends Controller
         summary: "Получить список продуктов",
         description: "Возвращает список продуктов с пагинацией",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "page",
@@ -101,7 +113,7 @@ class ProductController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", ref: "#/components/schemas/PaginatedProductResponse"),
+                        new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
                         new OA\Property(property: "message", type: "string", nullable: true),
                         new OA\Property(property: "code", type: "integer", example: 200),
                     ]
@@ -109,6 +121,100 @@ class ProductController extends Controller
             ),
         ]
     )]
+
+    /**
+     * Получить список продуктов (публичный доступ)
+     */
+    #[OA\Get(
+        path: "/api/public/products",
+        summary: "Получить список продуктов (публичный доступ)",
+        description: "Возвращает список продуктов с пагинацией. Без авторизации",
+        tags: ["Products"],
+        parameters: [
+            new OA\Parameter(
+                name: "page",
+                description: "Номер страницы",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "integer", default: 1)
+            ),
+            new OA\Parameter(
+                name: "per_page",
+                description: "Количество элементов на странице (макс. 100)",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "integer", default: 15, maximum: 100)
+            ),
+            new OA\Parameter(
+                name: "search",
+                description: "Поиск по названию или описанию",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "sort_by",
+                description: "Поле для сортировки",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(
+                    type: "string",
+                    enum: ["id", "name", "price", "created_at"],
+                    default: "id"
+                )
+            ),
+            new OA\Parameter(
+                name: "sort_order",
+                description: "Порядок сортировки",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(
+                    type: "string",
+                    enum: ["asc", "desc"],
+                    default: "desc"
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Успешная аутентификация",
+                content: new OA\JsonContent(ref: "#/components/schemas/ProductsListSuccessResponse")
+            )]
+    )]
+    public function indexPublic(Request $request)
+    {
+        // Логика аналогичная index(), но без проверки авторизации
+        $perPage = min($request->get('per_page', 15), 100);
+        $search = $request->get('search');
+        $sortBy = $request->get('sort_by', 'id');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        $query = Product::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $validSortFields = ['id', 'name', 'price', 'created_at'];
+        if (in_array($sortBy, $validSortFields)) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        $products = $query->paginate($perPage);
+
+        return $this->paginatedResponse(
+            $products,
+            'Список продуктов получен успешно'
+        );
+    }
+
+
+
+
     public function index(Request $request)
     {
         $perPage = min($request->get('per_page', 15), 100);
@@ -150,6 +256,7 @@ class ProductController extends Controller
         path: "/api/products/{id}",
         summary: "Получить продукт по ID",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "id",
@@ -197,6 +304,7 @@ class ProductController extends Controller
         summary: "Создать новый продукт",
         description: "Создает новый продукт и возвращает его данные",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(ref: "#/components/schemas/CreateProductRequest")
@@ -244,6 +352,7 @@ class ProductController extends Controller
         summary: "Обновить продукт",
         description: "Обновляет данные продукта и возвращает обновленный продукт",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "id",
@@ -287,6 +396,7 @@ class ProductController extends Controller
         summary: "Частично обновить продукт",
         description: "Частично обновляет данные продукта",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "id",
@@ -337,6 +447,7 @@ class ProductController extends Controller
         summary: "Удалить продукт",
         description: "Выполняет мягкое удаление продукта",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "id",
@@ -386,6 +497,7 @@ class ProductController extends Controller
         summary: "Восстановить удаленный продукт",
         description: "Восстанавливает мягко удаленный продукт",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "id",
@@ -427,6 +539,7 @@ class ProductController extends Controller
         summary: "Полное удаление продукта",
         description: "Полностью удаляет продукт из базы данных (включая мягко удаленные)",
         tags: ["Products"],
+         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "id",

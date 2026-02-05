@@ -7,8 +7,12 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## О коде
-
 ### тест задание созадть сайт апи ларавель 
-назвал проект 2602test_laravel
+
+в свагере
+
+1) для авторизации 
+   + получить токен в User -> /api/users/random/token
+   + (или регайтесь и там тоже будет токен)
+2) токен вводите в Authorize - и закрытые авторизацие методы работают 
 

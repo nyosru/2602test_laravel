@@ -26,6 +26,10 @@ trait ApiResponse
         return response()->json($response, $code);
     }
 
+
+
+
+
     /**
      * Ответ с ошибкой
      */

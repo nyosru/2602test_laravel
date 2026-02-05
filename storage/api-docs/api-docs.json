@@ -16,6 +16,306 @@
         }
     ],
     "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Получить Bearer Token",
+                "description": "Аутентификация пользователя и получение Bearer токена",
+                "operationId": "ea134134deae11eb974c719450ef8a02",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная аутентификация",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserWithTokenSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неверные учетные данные",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Регистрация нового пользователя",
+                "description": "Создание нового пользователя и получение Bearer токена",
+                "operationId": "58fe5a217ef88ae75e9b530a5e5817d1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "success": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "data": {
+                                        "$ref": "#/components/schemas/ProductResource"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "code": {
+                                        "type": "integer",
+                                        "example": 200
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Успешная регистрация",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|randomtoken123"
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "user@example.com"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешная регистрация"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 201
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Выход и отзыв токена",
+                "description": "Отзывает текущий Bearer токен пользователя",
+                "operationId": "5ebea01ab5f21df71d38f3505718a1d7",
+                "responses": {
+                    "200": {
+                        "description": "Успешный выход",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Успешный выход"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Получить информацию о текущем пользователе",
+                "description": "Возвращает информацию о текущем аутентифицированном пользователе",
+                "operationId": "5d53d4426dbc772353e5adeb30e5bcb0",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "user@example.com"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Информация о пользователе"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -23,7 +323,7 @@
                 ],
                 "summary": "Получить список продуктов",
                 "description": "Возвращает список продуктов с пагинацией",
-                "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
+                "operationId": "b22d7aac7f6a400f5accd9c66009be69",
                 "parameters": [
                     {
                         "name": "page",
@@ -98,7 +398,7 @@
                                             "example": true
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/PaginatedProductResponse"
+                                            "$ref": "#/components/schemas/ProductResource"
                                         },
                                         "message": {
                                             "type": "string",
@@ -114,7 +414,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -167,6 +472,95 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/public/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Получить список продуктов (публичный доступ)",
+                "description": "Возвращает список продуктов с пагинацией. Без авторизации",
+                "operationId": "eaa361e55f3b2ad7b7fddf752027a57e",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество элементов на странице (макс. 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по названию или описанию",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Поле для сортировки",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "id",
+                            "enum": [
+                                "id",
+                                "name",
+                                "price",
+                                "created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Порядок сортировки",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешная аутентификация",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductsListSuccessResponse"
                                 }
                             }
                         }
@@ -231,7 +625,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -309,7 +708,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -368,7 +772,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "patch": {
                 "tags": [
@@ -429,7 +838,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/products/{id}/restore": {
@@ -472,7 +886,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/products/{id}/force": {
@@ -512,6 +931,43 @@
                     },
                     "404": {
                         "description": "Продукт не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/random/token": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Получить случайный токен (для теста и быстрого получения токена)",
+                "description": "Возвращает случайный рабочий токен авторизации",
+                "operationId": "6528796250b8115b79988b2ac12f176e",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователи не найдены",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -708,6 +1164,97 @@
                     "code": {
                         "type": "integer",
                         "example": 500
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "properties": {
+                            "token": {
+                                "type": "string",
+                                "example": "1|randomtoken123"
+                            },
+                            "user": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
                     }
                 },
                 "type": "object"
@@ -987,19 +1534,737 @@
                     }
                 },
                 "type": "object"
+            },
+            "UserCollection": {
+                "description": "Пагинированная коллекция пользователей",
+                "properties": {
+                    "data": {
+                        "description": "Массив пользователей на текущей странице",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UserResource"
+                        }
+                    },
+                    "links": {
+                        "$ref": "#/components/schemas/PaginationLinks"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                },
+                "type": "object"
+            },
+            "UserCollectionWithStats": {
+                "description": "Пагинированная коллекция пользователей со статистикой",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/UserCollection"
+                    },
+                    {
+                        "properties": {
+                            "statistics": {
+                                "description": "Общая статистика по пользователям",
+                                "properties": {
+                                    "total": {
+                                        "description": "Общее количество пользователей",
+                                        "type": "integer",
+                                        "example": 150
+                                    },
+                                    "admins": {
+                                        "description": "Количество администраторов",
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "active": {
+                                        "description": "Количество активных пользователей (вошли за последние 30 дней)",
+                                        "type": "integer",
+                                        "example": 120
+                                    },
+                                    "verified": {
+                                        "description": "Количество подтвержденных пользователей",
+                                        "type": "integer",
+                                        "example": 140
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserCollectionSimple": {
+                "description": "Простая коллекция пользователей без пагинации",
+                "properties": {
+                    "data": {
+                        "description": "Массив пользователей",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UserResource"
+                        }
+                    },
+                    "count": {
+                        "description": "Общее количество пользователей в коллекции",
+                        "type": "integer",
+                        "example": 25
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "description": "Пользователь в ответе API",
+                "required": [
+                    "id",
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Иван Петров"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "email_verified_at": {
+                        "description": "Дата подтверждения email",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00",
+                        "nullable": true
+                    },
+                    "is_admin": {
+                        "description": "Является ли пользователь администратором",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    },
+                    "links": {
+                        "properties": {
+                            "self": {
+                                "type": "string",
+                                "format": "uri",
+                                "example": "http://api.example.com/api/user"
+                            },
+                            "products": {
+                                "description": "Ссылка на продукты пользователя",
+                                "type": "string",
+                                "format": "uri",
+                                "example": "http://api.example.com/api/user/products"
+                            },
+                            "tokens": {
+                                "description": "Ссылка на токены пользователя",
+                                "type": "string",
+                                "format": "uri",
+                                "example": "http://api.example.com/api/user/tokens"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "meta": {
+                        "properties": {
+                            "products_count": {
+                                "description": "Количество продуктов пользователя",
+                                "type": "integer",
+                                "example": 15
+                            },
+                            "tokens_count": {
+                                "description": "Количество активных токенов",
+                                "type": "integer",
+                                "example": 2
+                            },
+                            "last_login": {
+                                "description": "Последний вход",
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2024-01-20 14:25:00",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UserWithTokenResource": {
+                "description": "Пользователь с токеном в ответе API",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    {
+                        "properties": {
+                            "token": {
+                                "description": "Bearer токен для аутентификации",
+                                "type": "string",
+                                "example": "1|randomtoken1234567890"
+                            },
+                            "token_expires_at": {
+                                "description": "Срок действия токена",
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2025-01-15 10:30:00",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserWithTokensResource": {
+                "description": "Пользователь со списком токенов",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "tokens": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UserTokenInfo"
+                        }
+                    },
+                    "tokens_count": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "active_tokens_count": {
+                        "description": "Количество не истекших токенов",
+                        "type": "integer",
+                        "example": 2
+                    }
+                },
+                "type": "object"
+            },
+            "UserTokenInfo": {
+                "description": "Информация о токене пользователя",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "api-token"
+                    },
+                    "abilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "*"
+                        ]
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-20 14:25:00",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-01-15 10:30:00",
+                        "nullable": true
+                    },
+                    "is_valid": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "CurrentUserWithTokenInfo": {
+                "description": "Текущий пользователь с информацией о токене",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "current_token": {
+                        "$ref": "#/components/schemas/UserTokenInfo"
+                    },
+                    "instructions": {
+                        "properties": {
+                            "header_format": {
+                                "type": "string",
+                                "example": "Authorization: Bearer {token}"
+                            },
+                            "curl_example": {
+                                "type": "string",
+                                "example": "curl -H \"Authorization: Bearer YOUR_TOKEN\" http://api.example.com/api/products"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UserProfileResource": {
+                "description": "Расширенный профиль пользователя",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    {
+                        "properties": {
+                            "profile": {
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "http://api.example.com/storage/avatars/user1.jpg",
+                                        "nullable": true
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+7 (999) 123-45-67",
+                                        "nullable": true
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "г. Москва, ул. Примерная, д. 1",
+                                        "nullable": true
+                                    },
+                                    "company": {
+                                        "type": "string",
+                                        "example": "ООО \"Рога и копыта\"",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object",
+                                "nullable": true
+                            },
+                            "statistics": {
+                                "properties": {
+                                    "total_products": {
+                                        "type": "integer",
+                                        "example": 42
+                                    },
+                                    "active_products": {
+                                        "type": "integer",
+                                        "example": 35
+                                    },
+                                    "last_product_created": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-01-19 16:45:00",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "UserSuccessResponse": {
+                "description": "Успешный ответ с пользователем",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserWithTokenSuccessResponse": {
+                "description": "Успешный ответ с пользователем и токеном",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserWithTokenResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь с токеном получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserCreatedResponse": {
+                "description": "Пользователь успешно создан",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь успешно создан"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 201
+                    }
+                },
+                "type": "object"
+            },
+            "UserWithTokenCreatedResponse": {
+                "description": "Пользователь успешно создан с токеном",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserWithTokenResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь успешно создан"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 201
+                    }
+                },
+                "type": "object"
+            },
+            "UserUpdatedResponse": {
+                "description": "Пользователь успешно обновлен",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь успешно обновлен"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserDeletedResponse": {
+                "description": "Пользователь успешно удален",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь успешно удален"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserListSuccessResponse": {
+                "description": "Успешный ответ со списком пользователей",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserCollection"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Список пользователей получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserProfileSuccessResponse": {
+                "description": "Успешный ответ с профилем пользователя",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserProfileResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Профиль пользователя получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserWithTokensSuccessResponse": {
+                "description": "Успешный ответ с пользователем и его токенами",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/UserWithTokensResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь с токенами получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "CurrentUserWithTokenInfoResponse": {
+                "description": "Текущий пользователь с информацией о токене",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/CurrentUserWithTokenInfo"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Информация о токене получена"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserStatisticsResponse": {
+                "description": "Статистика пользователей",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "properties": {
+                            "total_users": {
+                                "type": "integer",
+                                "example": 150
+                            },
+                            "active_users": {
+                                "type": "integer",
+                                "example": 120
+                            },
+                            "admin_users": {
+                                "type": "integer",
+                                "example": 5
+                            },
+                            "new_users_today": {
+                                "type": "integer",
+                                "example": 3
+                            },
+                            "new_users_this_week": {
+                                "type": "integer",
+                                "example": 15
+                            },
+                            "new_users_this_month": {
+                                "type": "integer",
+                                "example": 42
+                            },
+                            "activity": {
+                                "properties": {
+                                    "last_24_hours": {
+                                        "type": "integer",
+                                        "example": 45
+                                    },
+                                    "last_7_days": {
+                                        "type": "integer",
+                                        "example": 210
+                                    },
+                                    "last_30_days": {
+                                        "type": "integer",
+                                        "example": 850
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Статистика пользователей получена"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserTokenCreatedResponse": {
+                "description": "Токен успешно создан",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "properties": {
+                            "token": {
+                                "type": "string",
+                                "example": "7|newtoken1234567890"
+                            },
+                            "token_type": {
+                                "type": "string",
+                                "example": "Bearer"
+                            },
+                            "expires_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true
+                            },
+                            "abilities": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Токен успешно создан"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 201
+                    }
+                },
+                "type": "object"
+            },
+            "UserLogoutResponse": {
+                "description": "Успешный выход из системы",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Успешный выход из системы"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "UserPasswordChangedResponse": {
+                "description": "Пароль успешно изменен",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Пароль успешно изменен"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "scheme": "bearer"
+                "scheme": "bearer",
+                "bearerFormat": "Sanctum Token",
+                "description": "Введите только сам токен (без слова Bearer). Пример: 1|abcdefghijklmnopqrstuvwxyz1234567890abcdef"
             }
         }
     },
     "tags": [
         {
             "name": "Products",
-            "description": "Products"
+            "description": "Операции с продуктами"
+        },
+        {
+            "name": "Authentication",
+            "description": "Аутентификация и управление пользователями"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         }
     ]
 }
