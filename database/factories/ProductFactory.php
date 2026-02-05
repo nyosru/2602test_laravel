@@ -4,43 +4,34 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
- */
 class ProductFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'name'        => $this->faker->unique()->catchPhrase(),
-            'description' => $this->faker->realTextBetween(50, 250),
-            'price'       => $this->faker->randomFloat(2, 9.99, 2499.99),
+            'name'        => $this->faker->words(3, true),      // ← $this->faker здесь работает
+            'description' => $this->faker->paragraph(),
+            'price'       => $this->faker->randomFloat(2, 10, 2000),
+            'stock'       => $this->faker->numberBetween(0, 100),
+            'is_active'   => $this->faker->boolean(80),
+            // ... остальные поля
         ];
     }
 
-    /**
-     * Состояние для дорогих товаров
-     */
-    public function expensive(): static
+    // Пример state с unique
+    public function expensive()
     {
-        return $this->state(fn (array $attributes) => [
-            'price' => $this->faker->randomFloat(2, 800, 5000),
-        ]);
+        return $this->state(function (array $attributes) {
+            return [
+                'price' => $this->faker->randomFloat(2, 500, 5000),  // ← здесь faker должен быть доступен
+            ];
+        });
     }
 
-    /**
-     * Состояние для товаров без описания
-     */
-    public function withoutDescription(): static
+    public function withoutDescription()
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state([
             'description' => null,
         ]);
     }
-
 }
