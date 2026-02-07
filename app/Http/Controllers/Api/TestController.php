@@ -61,7 +61,12 @@ class TestController
             return $this->notFoundResponse('Пользователи не найдены');
         }
         $token = $user->createToken('random-user')->plainTextToken;
-        return response()->json( ['token' => $token ]);
+//        return response()->json( ['token' => $token ]);
+
+        return $this->successResponse(
+            ['token' => $token],
+            'Токен успешно найден'
+        );
     }
 
 }

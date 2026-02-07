@@ -198,6 +198,48 @@ use OpenApi\Attributes as OA;
 
 
 #[OA\Schema(
+    schema: 'UserTokenRandomInfo',
+    type: 'object',
+    description: 'Информация о токене пользователя наугад',
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'name', type: 'string', example: 'api-token'),
+        new OA\Property(
+            property: 'abilities',
+            type: 'array',
+            items: new OA\Items(type: 'string'),
+            example: ['*']
+        ),
+        new OA\Property(
+            property: 'last_used_at',
+            type: 'string',
+            format: 'date-time',
+            nullable: true,
+            example: '2024-01-20 14:25:00'
+        ),
+        new OA\Property(
+            property: 'created_at',
+            type: 'string',
+            format: 'date-time',
+            example: '2024-01-15 10:30:00'
+        ),
+        new OA\Property(
+            property: 'expires_at',
+            type: 'string',
+            format: 'date-time',
+            nullable: true,
+            example: '2025-01-15 10:30:00'
+        ),
+        new OA\Property(
+            property: 'is_valid',
+            type: 'boolean',
+            example: true
+        ),
+    ]
+)]
+
+
+#[OA\Schema(
     schema: 'CurrentUserWithTokenInfo',
     type: 'object',
     description: 'Текущий пользователь с информацией о токене',

@@ -27,8 +27,8 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password'          => Hash::make('password123'), // или Str::random(12)
             'remember_token'    => Str::random(10),
-            'is_admin'          => false,
-            'api_limit'         => null,
+//            'is_admin'          => false,
+//            'api_limit'         => null,
             'created_at'        => now(),
             'updated_at'        => now(),
         ];

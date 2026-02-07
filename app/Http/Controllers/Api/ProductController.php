@@ -22,18 +22,103 @@ class ProductController extends Controller
     {
         $this->repository = $repository;
 
-//        $this->middleware('auth:sanctum')->except([
-//            'indexPublic',
-//            // 'showPublic', если есть
-//        ]);
-//        $this->middleware('auth:sanctum')->only([
-//            'store', 'update', 'destroy', 'restore', 'forceDestroy'
-//        ]);
-        // Применяем middleware авторизации ко всем методам, кроме публичных
         $this->middleware('auth:sanctum')->except([
             'indexPublic'
         ]);
     }
+
+    /**
+     * Получить список продуктов (публичный доступ)
+     */
+    #[OA\Get(
+        path: "/api/public/products",
+        summary: "Получить список продуктов (публичный доступ)",
+        description: "Возвращает список продуктов с пагинацией. Без авторизации",
+        tags: ["Products"],
+        parameters: [
+            new OA\Parameter(
+                name: "page",
+                description: "Номер страницы",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "integer", default: 1)
+            ),
+            new OA\Parameter(
+                name: "per_page",
+                description: "Количество элементов на странице (макс. 100)",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "integer", default: 15, maximum: 100)
+            ),
+            new OA\Parameter(
+                name: "search",
+                description: "Поиск по названию или описанию",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "sort_by",
+                description: "Поле для сортировки",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(
+                    type: "string",
+                    enum: ["id", "name", "price", "created_at"],
+                    default: "id"
+                )
+            ),
+            new OA\Parameter(
+                name: "sort_order",
+                description: "Порядок сортировки",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(
+                    type: "string",
+                    enum: ["asc", "desc"],
+                    default: "desc"
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Список продуктов - успешный ответ",
+                content: new OA\JsonContent(ref: "#/components/schemas/ProductsListSuccessResponse")
+            )]
+    )]
+    public function indexPublic(Request $request)
+    {
+        // Логика аналогичная index(), но без проверки авторизации
+        $perPage = min($request->get('per_page', 15), 100);
+        $search = $request->get('search');
+        $sortBy = $request->get('sort_by', 'id');
+        $sortOrder = $request->get('sort_order', 'desc');
+
+        $query = Product::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $validSortFields = ['id', 'name', 'price', 'created_at'];
+        if (in_array($sortBy, $validSortFields)) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
+
+        $products = $query->paginate($perPage);
+
+        return $this->paginatedResponse(
+            $products,
+            'Список продуктов получен успешно'
+        );
+    }
+
+
+
 
     /**
      * Получить список продуктов с пагинацией
@@ -43,7 +128,7 @@ class ProductController extends Controller
         summary: "Получить список продуктов",
         description: "Возвращает список продуктов с пагинацией",
         tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: "page",
@@ -121,100 +206,6 @@ class ProductController extends Controller
             ),
         ]
     )]
-
-    /**
-     * Получить список продуктов (публичный доступ)
-     */
-    #[OA\Get(
-        path: "/api/public/products",
-        summary: "Получить список продуктов (публичный доступ)",
-        description: "Возвращает список продуктов с пагинацией. Без авторизации",
-        tags: ["Products"],
-        parameters: [
-            new OA\Parameter(
-                name: "page",
-                description: "Номер страницы",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "integer", default: 1)
-            ),
-            new OA\Parameter(
-                name: "per_page",
-                description: "Количество элементов на странице (макс. 100)",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "integer", default: 15, maximum: 100)
-            ),
-            new OA\Parameter(
-                name: "search",
-                description: "Поиск по названию или описанию",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "sort_by",
-                description: "Поле для сортировки",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(
-                    type: "string",
-                    enum: ["id", "name", "price", "created_at"],
-                    default: "id"
-                )
-            ),
-            new OA\Parameter(
-                name: "sort_order",
-                description: "Порядок сортировки",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(
-                    type: "string",
-                    enum: ["asc", "desc"],
-                    default: "desc"
-                )
-            ),
-        ],
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: "Успешная аутентификация",
-                content: new OA\JsonContent(ref: "#/components/schemas/ProductsListSuccessResponse")
-            )]
-    )]
-    public function indexPublic(Request $request)
-    {
-        // Логика аналогичная index(), но без проверки авторизации
-        $perPage = min($request->get('per_page', 15), 100);
-        $search = $request->get('search');
-        $sortBy = $request->get('sort_by', 'id');
-        $sortOrder = $request->get('sort_order', 'desc');
-
-        $query = Product::query();
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        $validSortFields = ['id', 'name', 'price', 'created_at'];
-        if (in_array($sortBy, $validSortFields)) {
-            $query->orderBy($sortBy, $sortOrder);
-        }
-
-        $products = $query->paginate($perPage);
-
-        return $this->paginatedResponse(
-            $products,
-            'Список продуктов получен успешно'
-        );
-    }
-
-
-
-
     public function index(Request $request)
     {
         $perPage = min($request->get('per_page', 15), 100);
@@ -316,8 +307,8 @@ class ProductController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
                         new OA\Property(property: "message", type: "string", example: "Продукт успешно создан"),
+                        new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
                         new OA\Property(property: "code", type: "integer", example: 201),
                     ]
                 )

@@ -17,10 +17,8 @@ Route::prefix('users')->group(function () {
 });
 
 Route::
-//prefix('api')->
-as('api.')->
-group(function () {
-
+    as('api.')->
+    group(function () {
 
 // Публичные маршруты для продуктов (без авторизации, если нужно)
     Route::prefix('public')->group(function () {
@@ -28,7 +26,6 @@ group(function () {
             ->withoutMiddleware('auth:sanctum')
             ->name('products.public.index');
         Route::get('products/{product}', [ProductController::class, 'showPublic'])->name('products.public.show');
-
     });
 
 // Защищенные маршруты (требуется Bearer Token)
@@ -36,7 +33,6 @@ group(function () {
         // Аутентификация
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/user', [AuthController::class, 'user'])->name('user');
-
 
         Route::apiResource('products', ProductController::class);
         Route::get('products/search', [ProductController::class, 'searchByName'])

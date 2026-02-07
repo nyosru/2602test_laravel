@@ -91,8 +91,9 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: 'PaginatedProductResponse',
     type: 'object',
-    description: 'Пагинированный список продуктов',
+    description: 'Cписок продуктов',
     properties: [
+
         new OA\Property(
             property: 'data',
             type: 'array',
@@ -100,12 +101,30 @@ use OpenApi\Attributes as OA;
             items: new OA\Items(ref: '#/components/schemas/ProductResource')
         ),
         new OA\Property(
-            property: 'links',
-            ref: '#/components/schemas/PaginationLinks'
-        ),
-        new OA\Property(
-            property: 'meta',
-            ref: '#/components/schemas/PaginationMeta'
+            property: 'pagination',
+            type: 'object',
+            properties: [
+
+                new OA\Property(property: 'total', type: 'integer', example: '11'),
+                new OA\Property(property: 'count', type: 'integer', example: '11'),
+                new OA\Property(property: 'per_page', type: 'integer', example: '11'),
+                new OA\Property(property: 'current_page', type: 'integer', example: '11'),
+                new OA\Property(property: 'total_pages', type: 'integer', example: '11'),
+                new OA\Property(
+                    property: 'links',
+                    type: 'object',
+                    properties: [
+                        new OA\Property( property: 'first', type: 'string', format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
+                        new OA\Property( property: 'last', type: 'string', format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
+                        new OA\Property( property: 'prev', type: 'string', format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
+                        new OA\Property( property: 'next', type: 'string', format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
+                    ]
+                ),
+            ]
         ),
     ]
 )]

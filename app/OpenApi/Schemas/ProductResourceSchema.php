@@ -4,7 +4,8 @@ namespace App\OpenApi\Schemas;
 
 use OpenApi\Attributes as OA;
 
-#[OA\Schema(
+#[
+OA\Schema(
     schema: 'ProductResource',
     type: 'object',
     description: 'Продукт в ответе API',
@@ -42,18 +43,21 @@ use OpenApi\Attributes as OA;
             format: 'date-time',
             example: '2024-01-15 10:30:00'
         ),
-        new OA\Property(
-            property: 'links',
-            type: 'object',
-            properties: [
-                new OA\Property(
-                    property: 'self',
-                    type: 'string',
-                    format: 'uri',
-                    example: 'http://api.example.com/api/products/1'
-                )
-            ]
-        ),
+//        new OA\Property(
+//            property: 'links',
+//            type: 'object',
+//            properties: [
+//                new OA\Property(
+//                    property: 'self',
+//                    type: 'string',
+//                    format: 'uri',
+//                    example: 'http://api.example.com/api/products/1'
+//                )
+//            ]
+//        ),
+
     ]
 )]
-class ProductResourceSchema {}
+class ProductResourceSchema
+{
+}

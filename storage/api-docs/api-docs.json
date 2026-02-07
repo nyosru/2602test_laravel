@@ -37,12 +37,12 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "user@example.com"
+                                        "example": "ivan.petrov@example.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "password123"
+                                        "example": "Secret123!"
                                     }
                                 },
                                 "type": "object"
@@ -93,6 +93,7 @@
                 "description": "Создание нового пользователя и получение Bearer токена",
                 "operationId": "58fe5a217ef88ae75e9b530a5e5817d1",
                 "requestBody": {
+                    "description": "Данные для создания нового пользователя",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -104,23 +105,40 @@
                                     "password_confirmation"
                                 ],
                                 "properties": {
-                                    "success": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "data": {
-                                        "$ref": "#/components/schemas/ProductResource"
-                                    },
-                                    "message": {
+                                    "name": {
+                                        "description": "Имя или никнейм пользователя",
                                         "type": "string",
-                                        "nullable": true
+                                        "maxLength": 255,
+                                        "example": "Иван Петров"
                                     },
-                                    "code": {
-                                        "type": "integer",
-                                        "example": 200
+                                    "email": {
+                                        "description": "Email пользователя (должен быть уникальным)",
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 255,
+                                        "example": "ivan.petrov@example.com"
+                                    },
+                                    "password": {
+                                        "description": "Пароль (минимум 8 символов)",
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8,
+                                        "example": "Secret123!"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "Подтверждение пароля (должно совпадать с password)",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "Secret123!"
                                     }
                                 },
                                 "type": "object"
+                            },
+                            "example": {
+                                "name": "Иван Петров",
+                                "email": "ivan.petrov@example.com",
+                                "password": "Secret123!",
+                                "password_confirmation": "Secret123!"
                             }
                         }
                     }
@@ -131,47 +149,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "token": {
-                                                    "type": "string",
-                                                    "example": "1|randomtoken123"
-                                                },
-                                                "user": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "name": {
-                                                            "type": "string",
-                                                            "example": "John Doe"
-                                                        },
-                                                        "email": {
-                                                            "type": "string",
-                                                            "example": "user@example.com"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Успешная регистрация"
-                                        },
-                                        "code": {
-                                            "type": "integer",
-                                            "example": 201
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/UserWithTokenSuccessResponse"
                                 }
                             }
                         }
@@ -316,6 +294,90 @@
                 ]
             }
         },
+        "/api/public/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Получить список продуктов (публичный доступ)",
+                "description": "Возвращает список продуктов с пагинацией. Без авторизации",
+                "operationId": "eaa361e55f3b2ad7b7fddf752027a57e",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество элементов на странице (макс. 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Поиск по названию или описанию",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Поле для сортировки",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "id",
+                            "enum": [
+                                "id",
+                                "name",
+                                "price",
+                                "created_at"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Порядок сортировки",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список продуктов - успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductsListSuccessResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -323,7 +385,7 @@
                 ],
                 "summary": "Получить список продуктов",
                 "description": "Возвращает список продуктов с пагинацией",
-                "operationId": "b22d7aac7f6a400f5accd9c66009be69",
+                "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
                 "parameters": [
                     {
                         "name": "page",
@@ -449,12 +511,12 @@
                                             "type": "boolean",
                                             "example": true
                                         },
-                                        "data": {
-                                            "$ref": "#/components/schemas/ProductResource"
-                                        },
                                         "message": {
                                             "type": "string",
                                             "example": "Продукт успешно создан"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductResource"
                                         },
                                         "code": {
                                             "type": "integer",
@@ -482,90 +544,6 @@
                         "bearerAuth": []
                     }
                 ]
-            }
-        },
-        "/api/public/products": {
-            "get": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Получить список продуктов (публичный доступ)",
-                "description": "Возвращает список продуктов с пагинацией. Без авторизации",
-                "operationId": "eaa361e55f3b2ad7b7fddf752027a57e",
-                "parameters": [
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Номер страницы",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "description": "Количество элементов на странице (макс. 100)",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 15,
-                            "maximum": 100
-                        }
-                    },
-                    {
-                        "name": "search",
-                        "in": "query",
-                        "description": "Поиск по названию или описанию",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sort_by",
-                        "in": "query",
-                        "description": "Поле для сортировки",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "default": "id",
-                            "enum": [
-                                "id",
-                                "name",
-                                "price",
-                                "created_at"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "sort_order",
-                        "in": "query",
-                        "description": "Порядок сортировки",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "default": "desc",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ]
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешная аутентификация",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ProductsListSuccessResponse"
-                                }
-                            }
-                        }
-                    }
-                }
             }
         },
         "/api/products/{id}": {
@@ -1360,7 +1338,7 @@
                 "type": "object"
             },
             "PaginatedProductResponse": {
-                "description": "Пагинированный список продуктов",
+                "description": "Cписок продуктов",
                 "properties": {
                     "data": {
                         "description": "Массив продуктов",
@@ -1369,11 +1347,55 @@
                             "$ref": "#/components/schemas/ProductResource"
                         }
                     },
-                    "links": {
-                        "$ref": "#/components/schemas/PaginationLinks"
-                    },
-                    "meta": {
-                        "$ref": "#/components/schemas/PaginationMeta"
+                    "pagination": {
+                        "properties": {
+                            "total": {
+                                "type": "integer",
+                                "example": "11"
+                            },
+                            "count": {
+                                "type": "integer",
+                                "example": "11"
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": "11"
+                            },
+                            "current_page": {
+                                "type": "integer",
+                                "example": "11"
+                            },
+                            "total_pages": {
+                                "type": "integer",
+                                "example": "11"
+                            },
+                            "links": {
+                                "properties": {
+                                    "first": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://laravel.test.php-cat.com/api/public/products?page=1"
+                                    },
+                                    "last": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://laravel.test.php-cat.com/api/public/products?page=1"
+                                    },
+                                    "prev": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://laravel.test.php-cat.com/api/public/products?page=1"
+                                    },
+                                    "next": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "https://laravel.test.php-cat.com/api/public/products?page=1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -1418,16 +1440,6 @@
                         "type": "string",
                         "format": "date-time",
                         "example": "2024-01-15 10:30:00"
-                    },
-                    "links": {
-                        "properties": {
-                            "self": {
-                                "type": "string",
-                                "format": "uri",
-                                "example": "http://api.example.com/api/products/1"
-                            }
-                        },
-                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -1755,6 +1767,50 @@
             },
             "UserTokenInfo": {
                 "description": "Информация о токене пользователя",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "api-token"
+                    },
+                    "abilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "*"
+                        ]
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-20 14:25:00",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15 10:30:00"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-01-15 10:30:00",
+                        "nullable": true
+                    },
+                    "is_valid": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "UserTokenRandomInfo": {
+                "description": "Информация о токене пользователя наугад",
                 "properties": {
                     "id": {
                         "type": "integer",

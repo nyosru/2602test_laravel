@@ -53,7 +53,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Получить продукты пользователя (если нужна связь)
+     * Получить продукты пользователя
      */
     public function products()
     {
@@ -77,7 +77,14 @@ class User extends Authenticatable
             return false;
         }
 
-        // Здесь можно добавить логику подсчета запросов
+        // Пример: считаем количество запросов за последние 24 часа
+        // $count = $this->apiRequests()
+        //     ->where('created_at', '>=', now()->subDay())
+        //     ->count();
+
+        // return $count >= $this->api_limit;
+
+        // Пока заглушка
         return false;
     }
 
@@ -105,10 +112,33 @@ class User extends Authenticatable
      */
     public function revokeOtherTokens(): void
     {
-        if ($this->currentAccessToken) {
+        if ($this->currentAccessToken?->exists) {
             $this->tokens()
                 ->where('id', '!=', $this->currentAccessToken->id)
                 ->delete();
+        } else {
+            // Если нет текущего токена — отзываем все
+            $this->tokens()->delete();
         }
     }
+
+    /**
+     * Отозвать ВСЕ токены пользователя
+     */
+    public function revokeAllTokens(): void
+    {
+        $this->tokens()->delete();
+    }
+
+    /**
+     * Получить количество активных токенов
+     */
+    public function getActiveTokensCount(): int
+    {
+        return $this->tokens()
+            ->whereNull('expires_at')
+            ->orWhere('expires_at', '>', now())
+            ->count();
+    }
+
 }

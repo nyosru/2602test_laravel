@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -13,8 +14,17 @@ class AuthController extends Controller
 {
     use \App\Traits\ApiResponse;
 
+//    protected UserService $userService;
+    protected ?UserService $userService = null;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * Вход и получение токена
+     * @throws ValidationException
      */
     #[OA\Post(
         path: "/api/login",
@@ -26,8 +36,8 @@ class AuthController extends Controller
             content: new OA\JsonContent(
                 required: ["email", "password"],
                 properties: [
-                    new OA\Property(property: "email", type: "string", format: "email", example: "user@example.com"),
-                    new OA\Property(property: "password", type: "string", format: "password", example: "password123"),
+                    new OA\Property(property: "email", type: "string", format: "email", example: "ivan.petrov@example.com"),
+                    new OA\Property(property: "password", type: "string", format: "password", example: "Secret123!"),
                 ]
             )
         ),
@@ -66,29 +76,47 @@ class AuthController extends Controller
     )]
     public function login(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+//        $user = User::where('email', $request->email)->first();
+//        if (!$user || !Hash::check($request->password, $user->password)) {
+//            throw ValidationException::withMessages([
+//                'email' => ['Неверные учетные данные'],
+//            ]);
+//        }
+//        $token = $user->createToken('api-token')->plainTextToken;
+//        return $this->successResponse([
+//            'token' => $token,
+//            'user' => [
+//                'id' => $user->id,
+//                'name' => $user->name,
+//                'email' => $user->email,
+//            ],
+//        ], 'Успешный вход');
+        $result = $this->userService->login($validated);
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$result)
             throw ValidationException::withMessages([
                 'email' => ['Неверные учетные данные'],
             ]);
-        }
 
-        $token = $user->createToken('api-token')->plainTextToken;
+//        return $this->createdResponse(
+//            new ProductResource($product),
+//            'Продукт успешно создан'
+//        );
 
         return $this->successResponse([
-            'token' => $token,
+            'token' => $result['token'],
             'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
+                'id' => $result['user']->id,
+                'name' => $result['user']->name,
+                'email' => $result['user']->email,
             ],
         ], 'Успешный вход');
+
     }
 
     /**
@@ -99,43 +127,74 @@ class AuthController extends Controller
         summary: "Регистрация нового пользователя",
         description: "Создание нового пользователя и получение Bearer токена",
         tags: ["Authentication"],
+//        requestBody: new OA\RequestBody(
+//            required: true,
+//            content: new OA\JsonContent(
+//                required: ["name", "email", "password", "password_confirmation"],
+////                properties: [
+////                    new OA\Property(property: "name", type: "string", example: "John Doe"),
+////                    new OA\Property(property: "email", type: "string", format: "email", example: "user@example.com"),
+////                    new OA\Property(property: "password", type: "string", format: "password", example: "password123"),
+////                    new OA\Property(property: "password_confirmation", type: "string", format: "password", example: "password123"),
+////                ]
+//                properties: [
+//                    new OA\Property(property: "success", type: "boolean", example: true),
+//                    new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
+//                    new OA\Property(property: "message", type: "string", nullable: true),
+//                    new OA\Property(property: "code", type: "integer", example: 200),
+//                    ]
+//)
+//        ),
         requestBody: new OA\RequestBody(
             required: true,
+            description: "Данные для создания нового пользователя",
             content: new OA\JsonContent(
                 required: ["name", "email", "password", "password_confirmation"],
-//                properties: [
-//                    new OA\Property(property: "name", type: "string", example: "John Doe"),
-//                    new OA\Property(property: "email", type: "string", format: "email", example: "user@example.com"),
-//                    new OA\Property(property: "password", type: "string", format: "password", example: "password123"),
-//                    new OA\Property(property: "password_confirmation", type: "string", format: "password", example: "password123"),
-//                ]
                 properties: [
-                    new OA\Property(property: "success", type: "boolean", example: true),
-                    new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
-                    new OA\Property(property: "message", type: "string", nullable: true),
-                    new OA\Property(property: "code", type: "integer", example: 200),
-                    ]
-)
+                    new OA\Property(
+                        property: "name",
+                        type: "string",
+                        maxLength: 255,
+                        example: "Иван Петров",
+                        description: "Имя или никнейм пользователя"
+                    ),
+                    new OA\Property(
+                        property: "email",
+                        type: "string",
+                        format: "email",
+                        maxLength: 255,
+                        example: "ivan.petrov@example.com",
+                        description: "Email пользователя (должен быть уникальным)"
+                    ),
+                    new OA\Property(
+                        property: "password",
+                        type: "string",
+                        format: "password",
+                        minLength: 8,
+                        example: "Secret123!",
+                        description: "Пароль (минимум 8 символов)"
+                    ),
+                    new OA\Property(
+                        property: "password_confirmation",
+                        type: "string",
+                        format: "password",
+                        example: "Secret123!",
+                        description: "Подтверждение пароля (должно совпадать с password)"
+                    ),
+                ],
+                example: [
+                    "name" => "Иван Петров",
+                    "email" => "ivan.petrov@example.com",
+                    "password" => "Secret123!",
+                    "password_confirmation" => "Secret123!",
+                ]
+            )
         ),
         responses: [
             new OA\Response(
                 response: 201,
                 description: "Успешная регистрация",
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", type: "object", properties: [
-                            new OA\Property(property: "token", type: "string", example: "1|randomtoken123"),
-                            new OA\Property(property: "user", type: "object", properties: [
-                                new OA\Property(property: "id", type: "integer", example: 1),
-                                new OA\Property(property: "name", type: "string", example: "John Doe"),
-                                new OA\Property(property: "email", type: "string", example: "user@example.com"),
-                            ]),
-                        ]),
-                        new OA\Property(property: "message", type: "string", example: "Успешная регистрация"),
-                        new OA\Property(property: "code", type: "integer", example: 201),
-                    ]
-                )
+                content: new OA\JsonContent(ref: "#/components/schemas/UserWithTokenSuccessResponse")
             ),
             new OA\Response(
                 response: 422,
@@ -146,28 +205,23 @@ class AuthController extends Controller
     )]
     public function register(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $token = $user->createToken('api-token')->plainTextToken;
+        $result = $this->userService->register($validated);
 
         return $this->createdResponse([
-            'token' => $token,
+            'token' => $result['token'],
             'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
+                'id' => $result['user']->id,
+                'name' => $result['user']->name,
+                'email' => $result['user']->email,
             ],
-        ], 'Успешная регистрация');
+        ], 'Успешная регистрация', 201);
+
     }
 
     /**
@@ -200,8 +254,8 @@ class AuthController extends Controller
     )]
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-
+//        $request->user()->currentAccessToken()->delete();
+        $this->userService->logout($request->user());
         return $this->successResponse(null, 'Успешный выход');
     }
 
@@ -242,8 +296,10 @@ class AuthController extends Controller
     )]
     public function user(Request $request)
     {
+        $user = $this->userService->getCurrentUser($request->user());
         return $this->successResponse(
-            $request->user(),
+//            $request->user(),
+            $user,
             'Информация о пользователе'
         );
     }
