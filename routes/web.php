@@ -13,21 +13,24 @@ use Inertia\Inertia;
 Route::get('/login', function () {
     return inertia('Auth/Login');
 })->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login']);
 
 
-Route::get('/', function () {
+Route::get('', function () {
     return view('welcome');
 });
 
-Route::get('/vue3/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+Route::prefix('vue3')->group(function () {
+    Route::get('', function () {
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+        ]);
+    });
 });
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

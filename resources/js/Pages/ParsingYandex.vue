@@ -16,6 +16,7 @@
                                 v-model="form.url"
                                 required
                                 type="url"
+
                                 placeholder="https://yandex.ru/..."
                                 class="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
                             />
@@ -49,8 +50,46 @@
                     </button>
                 </div>
 
+
+                Рейтинг: {{ parsedData.data.original.rating }}
+
+                <br/>
+                <br/>
+
+                Данные
+
+                <div style="border:2px solid red; padding: 10px;"
+                     class="max-h-[300px] border-2 border-green-300 p-3 w-full overflow-auto"
+                >
+                    <!--                    {{ parsedData }}-->
+                    <pre>
+                        {{ JSON.stringify(parsedData, null, 2) }}
+                    </pre>
+                </div>
+
+                <h2 class="font-bold text-xl">Отзывы</h2>
+                <div class="max-h-[300px] border-2 border-red-300 p-3 w-full overflow-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div v-for="(review, index) in parsedData.data.original.reviews">
+                            {{ review }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <h2 class="font-bold text-xl">businesAspects</h2>
+                <div class="max-h-[300px] border-2 border-red-300 p-3 w-full overflow-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div v-for="(item, index) in parsedData.data.original.businesAspects">
+                            {{ item }}
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- Основная информация -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                     <div class="bg-white shadow-xl rounded-xl p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Основная информация</h3>
                         <div class="space-y-3">
@@ -107,7 +146,8 @@
                     <div class="bg-white shadow-xl rounded-xl p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Изображения
                             ({{ parsedData.images?.length || 0 }})</h3>
-                        <div v-if="parsedData.images?.length" class="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+                        <div v-if="parsedData.images?.length"
+                             class="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
                             <img
                                 v-for="(img, index) in parsedData.images.slice(0, 9)"
                                 :key="index"
@@ -128,10 +168,12 @@
 <script setup>
 
 import {ref} from 'vue'
+// import {useForm} from '@inertiajs/vue3'
 import {useForm} from '@inertiajs/vue3'
+import axios from 'axios'
 
 const form = useForm({
-    url: '',
+    url: 'https://yandex.ru/maps/org/samoye_populyarnoye_kafe/1010501395/reviews/',
 })
 
 const urlError = ref('')
@@ -140,8 +182,68 @@ const parsedData = ref(null)
 const parsedUrl = ref('')
 
 // const parseYandexUrl = () => {
-const parseYandexUrl = async () => {
+// const parseYandexUrl = async () => {
+//
+//     if (!form.url.includes('yandex.ru') && !form.url.includes('yandex.com')) {
+//         urlError.value = 'Только ссылки с Яндекса!'
+//         return
+//     }
+//
+//     loading.value = true
+//     urlError.value = ''
+//
+//     // form.post('/parse-yandex', {
+//     //     onSuccess: (page) => {
+//     //         parsedData.value = page.props.parsedData
+//     //         parsedUrl.value = page.props.parsedUrl
+//     //         form.reset('url')
+//     //     },
+//     //     onError: (errors) => {
+//     //         urlError.value = errors.url || 'Ошибка парсинга'
+//     //     },
+//     //     onFinish: () => {
+//     //         loading.value = false
+//     //     }
+//     // })
+//
+//     try {
+//         // await router.post('/api/parse-yandex', {url: urlInput.value}, {
+//         await router.get('/api/parse-yandex', {url: urlInput.value}, {
+//             preserveState: true,
+//             preserveScroll: true,
+//             onSuccess: (page) => {
+//                 parsedData.value = page.props.parsedData
+//                 // parsedUrl тоже можно передать как prop
+//             },
+//             onError: (errors) => {
+//                 urlError.value = 'Ошибка: ' + (errors.message || JSON.stringify(errors))
+//             }
+//         })
+//     } catch (error) {
+//         urlError.value = 'Сетевая ошибка: ' + error.message
+//     } finally {
+//         loading.value = false
+//     }
 
+
+//
+// const parseYandexUrl = () => {
+//     form.get('/api/parse-yandex', {
+//         preserveState: true,
+//         preserveScroll: true,
+//         onSuccess: (page) => {
+//             parsedData.value = page.props.parsedData
+//             parsedUrl.value = form.url
+//         },
+//         onError: (errors) => {
+//             urlError.value = errors.url || 'Ошибка парсинга'
+//         },
+//         onFinish: () => loading.value = false,
+//     })
+// }
+
+
+const parseYandexUrl = async () => {
     if (!form.url.includes('yandex.ru') && !form.url.includes('yandex.com')) {
         urlError.value = 'Только ссылки с Яндекса!'
         return
@@ -150,39 +252,28 @@ const parseYandexUrl = async () => {
     loading.value = true
     urlError.value = ''
 
-    // form.post('/parse-yandex', {
-    //     onSuccess: (page) => {
-    //         parsedData.value = page.props.parsedData
-    //         parsedUrl.value = page.props.parsedUrl
-    //         form.reset('url')
-    //     },
-    //     onError: (errors) => {
-    //         urlError.value = errors.url || 'Ошибка парсинга'
-    //     },
-    //     onFinish: () => {
-    //         loading.value = false
-    //     }
-    // })
-
     try {
-        await router.post('/parse-yandex', { url: urlInput.value }, {
-            preserveState: true,
-            preserveScroll: true,
-            onSuccess: (page) => {
-                parsedData.value = page.props.parsedData
-                // parsedUrl тоже можно передать как prop
-            },
-            onError: (errors) => {
-                urlError.value = 'Ошибка: ' + (errors.message || JSON.stringify(errors))
-            }
+        const response = await axios.get('/api/parse-yandex', {
+            params: {url: form.url}
         })
+
+        parsedData.value = response.data
+        parsedUrl.value = form.url
+        form.reset('url')
     } catch (error) {
-        urlError.value = 'Сетевая ошибка: ' + error.message
+        if (error.response) {
+            urlError.value = 'Ошибка: ' + error.response.data.message || 'Неизвестная ошибка'
+        } else if (error.request) {
+            urlError.value = 'Нет ответа от сервера'
+        } else {
+            urlError.value = 'Ошибка: ' + error.message
+        }
     } finally {
         loading.value = false
     }
-
 }
+
+// }
 
 const resetForm = () => {
     parsedData.value = null

@@ -19,7 +19,41 @@ ENV PHPUSER=${PHPUSER}
 ENV FOLDER=${FOLDER}
 
 #WORKDIR ${FOLDER}
-USER ${PHPUSER}
+
+# Устанавливаем Chromium, chromedriver и все зависимости для запуска браузера
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        chromium \
+        chromium-driver \
+        libnss3 \
+        libatk-bridge2.0-0 \
+        libdrm2 \
+        libxkbcommon0 \
+        libgbm1 \
+        libasound2 \
+        libxcomposite1 \
+        libxdamage1 \
+        libxfixes3 \
+        libxrandr2 \
+        libpango-1.0-0 \
+        libcairo2 \
+        libatk1.0-0 \
+        libcups2 \
+        libdbus-1-3 \
+        libexpat1 \
+        libfontconfig1 \
+        libgcc1 \
+        libglib2.0-0 \
+        libgtk-3-0 \
+        libstdc++6 \
+        wget \
+        unzip \
+        ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN ln -s /usr/bin/chromium /usr/bin/google-chrome \
+    && ln -s /usr/bin/chromedriver /usr/local/bin/chromedriver
 
 # Установка необходимых пакетов и расширений PHP
 RUN apt-get update -y \
@@ -50,3 +84,5 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #RUN cd /home/2602test_laravel && chmod -R 0777 storage
 #RUN cd ${FOLDER} && chmod -R 0777 storage
+
+USER ${PHPUSER}

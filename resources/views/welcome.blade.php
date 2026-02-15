@@ -48,14 +48,22 @@
             GitHub код этого сайта со всеми блоками
         </a></p>
 
-    <div class="w-full flex flex-row flex-wrap items-center justify-center mt-10">
+    <div class="w-full flex flex-row flex-wrap xitems-center justify-center mt-10">
 
         <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <b>Модель Товары + API + swager</b>
 
-            <p><a href="/api/documentation" class="underline text-blue-600">Переход в swagger</a> покликать API,
+            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в swagger</a> покликать API,
                 ключевая модель Product (остальные прицепом появились из других тест
                 заданий), слоёная структура проекта контроллер, сервис, репозиторий</p>
+
+        </div>
+
+        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <b>vue3 + получение инфы о компании с яндекс карт</b>
+
+            <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в vue3 приложение</a></p>
+                <p>Получаем ссылку на компанию и показываем оценку и отзывы</p>
 
         </div>
 

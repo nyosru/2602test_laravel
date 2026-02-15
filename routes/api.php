@@ -2,17 +2,23 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\YandexParserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-
-
 
 
 
 Route::
     as('api.')->
     group(function () {
+
+
+        // получаем инфу о компании с яндекс карт
+        Route::get('parse-yandex', [YandexParserController::class, 'get'])
+            ->name('parse-yandex');
+
+
+
 
 
     Route::post('/login', [AuthController::class, 'login'])->name('login');
