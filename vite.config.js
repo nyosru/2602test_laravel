@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';  // ← это должно работать с v6+
 
 export default defineConfig({
     plugins: [
@@ -8,11 +8,19 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
-        tailwindcss(),
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
     ],
     server: {
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
-        },
-    },
+        hmr: {
+            // host: 'lara2602.local',
+            host: 'localhost',
+        }
+    }
 });

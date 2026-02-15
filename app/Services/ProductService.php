@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\DTOs\Product\CreateProductDTO;
+use App\DTOs\Product\ProductDTO;
+use App\DTOs\Product\UpdateProductDTO;
 use App\Repositories\ProductRepository;
 use App\Repositories\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,6 +26,7 @@ class ProductService
     {
         return $this->productRepository->all();
     }
+
     public function getPaginatedProducts(int $perPage = 15): LengthAwarePaginator
     {
         return $this->productRepository->paginate($perPage);
@@ -30,17 +34,27 @@ class ProductService
 
     public function getProductById(int $id): ?object
     {
-        return $this->productRepository->find($id);
+//        return $this->productRepository->find($id);
+        $product = $this->productRepository->find($id);
+        return $product ? ProductDTO::fromModel($product) : null;
     }
 
-    public function createProduct(array $data): object
+//    public function createProduct(array $data): object
+    public function createProduct(CreateProductDTO $dto): ProductDTO
     {
-        return $this->productRepository->create($data);
+//        return $this->productRepository->create($data);
+        $product = $this->productRepository->create($dto->toArray());
+        return ProductDTO::fromModel($product);
     }
 
-    public function updateProduct(int $id, array $data): bool
+//    public function updateProduct(int $id, array $data): bool
+//    {
+//        return $this->productRepository->update($id, $data);
+//    }
+    public function updateProduct(UpdateProductDTO $dto): ?ProductDTO
     {
-        return $this->productRepository->update($id, $data);
+        $product = $this->productRepository->update($dto->id, $dto->toArray());
+        return $product ? ProductDTO::fromModel($product) : null;
     }
 
     public function deleteProduct(int $id): bool

@@ -6,19 +6,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/register', [AuthController::class, 'register'])->name('register');
 
-Route::prefix('users')->group(function () {
-    Route::prefix('random')->group(function () {
-        Route::get('', [\App\Http\Controllers\Api\TestController::class, 'getRandomUser']);
-        Route::get('token', [\App\Http\Controllers\Api\TestController::class, 'getRandomToken']);
-    });
-});
+
+
 
 Route::
     as('api.')->
     group(function () {
+
+
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+    Route::prefix('users')->group(function () {
+        Route::prefix('random')->group(function () {
+            Route::get('', [\App\Http\Controllers\Api\TestController::class, 'getRandomUser']);
+            Route::get('token', [\App\Http\Controllers\Api\TestController::class, 'getRandomToken']);
+        });
+    });
+
+
 
 // Публичные маршруты для продуктов (без авторизации, если нужно)
     Route::prefix('public')->group(function () {

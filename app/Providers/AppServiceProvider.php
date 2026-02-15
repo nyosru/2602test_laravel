@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Repositories\ProductRepository;
+use App\Repositories\ProductRepositoryInterface;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,12 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
-        $this->app->bind(
-            \App\Repositories\ProductRepositoryInterface::class,
-            \App\Repositories\ProductRepository::class
-        );
-
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
     }
 
     /**
@@ -24,6 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Vite::prefetch(concurrency: 3);
     }
 }
