@@ -67,22 +67,6 @@
 
         </div>
 
-        <a href="#1">
-            <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                11111111
-            </div>
-        </a>
-        <a href="#1">
-            <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                11111111
-            </div>
-        </a>
-        <a href="#1">
-            <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-                11111111
-            </div>
-        </a>
-
     </div>
 </div>
 
