@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
 
+Route::get('sudoku', function () {
+    return Inertia::render('Sudoku');
+})->name('sudoku');
+
+
 
 Route::get('/login', function () {
     return inertia('Auth/Login');
@@ -30,6 +35,7 @@ Route::prefix('vue3')->group(function () {
         ]);
     });
 });
+
 
 
 Route::get('/dashboard', function () {

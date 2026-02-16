@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\VirtualBrowserService;
+use App\Services\BrowserRenderService;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
@@ -17,9 +18,10 @@ use Illuminate\Support\Facades\Cache;
 
 class YandexParserController extends Controller
 {
-    protected VirtualBrowserService $browser;
 
-    public function __construct(VirtualBrowserService $browser)
+    protected BrowserRenderService $browser;
+
+    public function __construct(BrowserRenderService $browser)
     {
         $this->browser = $browser;
     }
@@ -38,7 +40,8 @@ class YandexParserController extends Controller
 
 //        $data['data'] = $this->get_from_key( $request->url );
 //        $data['data'] = $this->get_from_crawler( $request->url );
-        $data['data'] = $this->get_from_panther($request->url);
+//        $data['data'] = $this->get_from_panther($request->url);
+        $data['data'] = $this->get_from_browsershot($request->url);
 
         return response()->json($data);
     }
@@ -149,6 +152,46 @@ class YandexParserController extends Controller
             ], 500);
         }
     }
+
+
+    public function get_from_browsershot(string $url, bool $refresh = false){
+
+
+        if (!$url || !str_contains($url, 'yandex.ru/maps')) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Неверная или отсутствующая ссылка. Должна быть с Яндекс.Карт',
+            ], 400);
+        }
+
+        // Нормализуем ссылку — всегда на вкладку отзывов
+        if (!str_ends_with($url, '/reviews/')) {
+            $url = rtrim($url, '/') . '/reviews/';
+        }
+
+
+        $cacheKey = 'yandex_parse_' . md5($url);
+
+        if ($refresh) Cache::forget($cacheKey);
+
+        $html = Cache::remember($cacheKey,
+            now()->addHours(6),
+//            now()->addMinute(1),
+            function () use ($url) {
+
+                return $this->browser->getPageHtml($url, [
+                    'wait_selector' => '.business-reviews-card-view__review',
+                    'wait_timeout'  => 30,
+                    'scroll_count'  => 3,
+                    'scroll_wait'   => 3,
+                ]);
+
+            });
+
+
+    }
+
+
 
     public function get_from_panther(string $url, bool $refresh = false)
     {

@@ -67,6 +67,15 @@
 
         </div>
 
+        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <b>vue3 играем в судоку!</b>
+
+            <p><a href="/sudoku/" class="underline text-blue-600" target="_blank">Играть в судоку</a></p>
+                <p>Создать судоку в которое играть норм</p>
+                <p>Есть тех долг небольшой, функционал меня как игрока устраивает</p>
+
+        </div>
+
     </div>
 </div>
 
