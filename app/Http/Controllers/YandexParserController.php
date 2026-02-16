@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\VirtualBrowserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
@@ -16,6 +17,15 @@ use Illuminate\Support\Facades\Cache;
 
 class YandexParserController extends Controller
 {
+    protected VirtualBrowserService $browser;
+
+    public function __construct(VirtualBrowserService $browser)
+    {
+        $this->browser = $browser;
+    }
+
+
+
     public function get(Request $request)
     {
 
@@ -163,90 +173,21 @@ class YandexParserController extends Controller
         }
 
 
-        $html = Cache::remember($cacheKey, now()->addHours(6), function () use ($url) {
+        $html = Cache::remember($cacheKey,
+            now()->addHours(6),
+//            now()->addMinute(1),
+            function () use ($url) {
 
-
-            try {
-
-                // Создаём Panther-клиент с настройками для Docker
-                $client = PantherClient::createChromeClient(
-                    '/usr/local/bin/chromedriver',
-//                    '/usr/bin/chromedriver',
-                    [
-//                        '--headless=new',                     // новый headless-режим (более стабильный)
-//                        '--no-sandbox',
-//                        '--disable-dev-shm-usage',
-//                        '--disable-gpu',
-//                        '--window-size=1920,1080',
-//
-//                        '--disable-software-rasterizer',
-//                        '--disable-extensions',
-//                        '--disable-setuid-sandbox',
-//                        '--remote-debugging-port=9222',       // явно указываем порт
-////                        '--no-zygote',                    // ← добавь это
-////                        '--single-process',
-//                        '--disable-background-networking',
-//                        '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        '--headless=new',
-                        '--no-sandbox',
-                        '--disable-dev-shm-usage',
-                        '--disable-gpu',
-                        '--window-size=1920,1080',
-                        '--disable-extensions',
-
-                        '--disable-crash-reporter',
-                        '--disable-in-process-stack-traces',
-                        '--disable-logging',
-                        '--log-level=3',
-                        '--user-data-dir=/tmp/chrome-user-data',
-
-                    ],
-                    [
-                        'chrome' => [
-                            'binary' => '/usr/bin/chromium',  // или /usr/lib/chromium-browser/chrome
-                        ],
-                        'chromedriver_arguments' => [
-                            '--verbose',
-                            '--log-path=/tmp/chromedriver.log'
-                        ],
-                    ]);
-
-                // Открываем страницу
-                $crawler = $client->request('GET', $url);
-
-                // Ждём появления блока с отзывами (максимум 20 секунд)
-//                $client->waitFor('.business-reviews-card-view__review', 20000);
-                $client->waitForVisibility(
-                    '.business-reviews-card-view__review',
-                    20000
-                );
-
-
-                // Прокручиваем вниз 2–3 раза, чтобы подгрузились дополнительные отзывы
-                for ($i = 0; $i < 3; $i++) {
-                    $client->executeScript('window.scrollTo(0, document.body.scrollHeight);');
-                    sleep(3); // ждём подгрузки AJAX-контента
-                }
-
-                // Получаем полный HTML после всех действий
-                $rawHtml = $client->getInternalResponse()->getContent();
-
-                // Обязательно закрываем браузер!
-                $client->quit();
-
-                return $rawHtml;
-
-            } catch (\Exception $e) {
-
-                $client->quit();
-                throw $e; // чтобы Cache::remember поймал исключение и не кэшировал ошибку
-
-            }
+            return $this->browser->getPageHtml($url, [
+                'wait_selector' => '.business-reviews-card-view__review',
+                'wait_timeout'  => 30,
+                'scroll_count'  => 3,
+                'scroll_wait'   => 3,
+            ]);
 
         });
 
 //        dump($html);
-
 //        echo '<div style="border:2px solid red; padding: 10px;">'.$html.'</div>';
 
         try {
