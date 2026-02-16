@@ -170,21 +170,30 @@ class YandexParserController extends Controller
 
                 // Создаём Panther-клиент с настройками для Docker
                 $client = PantherClient::createChromeClient(
-                    '/usr/local/bin/chromedriver',
+//                    '/usr/local/bin/chromedriver',
+                    '/usr/bin/chromedriver',
                     [
-                        '--headless=new',                     // новый headless-режим (более стабильный)
+//                        '--headless=new',                     // новый headless-режим (более стабильный)
+//                        '--no-sandbox',
+//                        '--disable-dev-shm-usage',
+//                        '--disable-gpu',
+//                        '--window-size=1920,1080',
+//
+//                        '--disable-software-rasterizer',
+//                        '--disable-extensions',
+//                        '--disable-setuid-sandbox',
+//                        '--remote-debugging-port=9222',       // явно указываем порт
+////                        '--no-zygote',                    // ← добавь это
+////                        '--single-process',
+//                        '--disable-background-networking',
+//                        '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        '--headless=new',
                         '--no-sandbox',
                         '--disable-dev-shm-usage',
                         '--disable-gpu',
-                        '--disable-software-rasterizer',
-                        '--disable-extensions',
-                        '--disable-setuid-sandbox',
-                        '--remote-debugging-port=9222',       // явно указываем порт
-                        '--no-zygote',                    // ← добавь это
-                        '--single-process',
-                        '--disable-background-networking',
                         '--window-size=1920,1080',
-                        '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        '--disable-extensions',
+
                     ],
                     [
                         'chrome' => [
@@ -196,7 +205,12 @@ class YandexParserController extends Controller
                 $crawler = $client->request('GET', $url);
 
                 // Ждём появления блока с отзывами (максимум 20 секунд)
-                $client->waitFor('.business-reviews-card-view__review', 20000);
+//                $client->waitFor('.business-reviews-card-view__review', 20000);
+                $client->waitForVisibility(
+                    '.business-reviews-card-view__review',
+                    20000
+                );
+
 
                 // Прокручиваем вниз 2–3 раза, чтобы подгрузились дополнительные отзывы
                 for ($i = 0; $i < 3; $i++) {
