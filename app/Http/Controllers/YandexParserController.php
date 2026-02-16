@@ -170,8 +170,8 @@ class YandexParserController extends Controller
 
                 // Создаём Panther-клиент с настройками для Docker
                 $client = PantherClient::createChromeClient(
-//                    '/usr/local/bin/chromedriver',
-                    '/usr/bin/chromedriver',
+                    '/usr/local/bin/chromedriver',
+//                    '/usr/bin/chromedriver',
                     [
 //                        '--headless=new',                     // новый headless-режим (более стабильный)
 //                        '--no-sandbox',
