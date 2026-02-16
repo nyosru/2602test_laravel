@@ -169,7 +169,9 @@ class YandexParserController extends Controller
             try {
 
                 // Создаём Panther-клиент с настройками для Docker
-                $client = PantherClient::createChromeClient(null, [
+                $client = PantherClient::createChromeClient(
+                    '/usr/lib/chromium-browser/chromedriver',
+                    [
                     '--headless=new',                     // новый headless-режим (более стабильный)
                     '--no-sandbox',
                     '--disable-dev-shm-usage',
@@ -181,7 +183,12 @@ class YandexParserController extends Controller
                     '--disable-background-networking',
                     '--window-size=1920,1080',
                     '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                ]);
+                ],
+                    [
+                        'chrome' => [
+                            'binary' => '/usr/bin/chromium-browser',  // или /usr/lib/chromium-browser/chrome
+                        ],
+                    ]);
 
                 // Открываем страницу
                 $crawler = $client->request('GET', $url);
