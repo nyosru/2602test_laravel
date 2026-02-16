@@ -199,6 +199,10 @@ class YandexParserController extends Controller
                         'chrome' => [
                             'binary' => '/usr/bin/chromium',  // или /usr/lib/chromium-browser/chrome
                         ],
+                        'chromedriver_arguments' => [
+                            '--verbose',
+                            '--log-path=/tmp/chromedriver.log'
+                        ],
                     ]);
 
                 // Открываем страницу
