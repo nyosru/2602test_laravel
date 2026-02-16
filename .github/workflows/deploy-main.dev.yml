@@ -54,7 +54,8 @@ jobs:
             echo "✅ Код успешно обновлен"
 
             # Обновление зависимостей
-            docker exec ${{ env.DOCKER_CONTAINER }} composer install --no-dev --optimize-autoloader
+            #docker exec ${{ env.DOCKER_CONTAINER }} composer install --no-dev --optimize-autoloader
+            docker exec ${{ env.DOCKER_CONTAINER }} composer install --optimize-autoloader
             #docker exec ${{ env.DOCKER_CONTAINER }} npm install
             #docker exec ${{ env.DOCKER_CONTAINER }} npm run build
 
