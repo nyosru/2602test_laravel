@@ -194,6 +194,12 @@ class YandexParserController extends Controller
                         '--window-size=1920,1080',
                         '--disable-extensions',
 
+                        '--disable-crash-reporter',
+                        '--disable-in-process-stack-traces',
+                        '--disable-logging',
+                        '--log-level=3',
+                        '--user-data-dir=/tmp/chrome-user-data',
+
                     ],
                     [
                         'chrome' => [
