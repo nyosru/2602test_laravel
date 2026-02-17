@@ -1,6 +1,9 @@
 <template>
     <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto">
+
+<!--            <pre>{{ // JSON.stringify(parseData, null, 2) }}</pre>-->
+
             <!-- Форма ввода URL -->
             <div v-if="!parsedData" class="bg-white shadow-xl rounded-xl p-8">
                 <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">
@@ -38,9 +41,14 @@
 
             <!-- Результат парсинга -->
             <div v-else class="space-y-8">
+
+<!--                <pre>{{ JSON.stringify(parseData, null, 2) }}</pre>-->
+<!--                <pre>{{ $parseData.data }}</pre>-->
+
+
                 <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-bold text-gray-900">
-                        Результат парсинга: {{ parsedUrl }}
+                        Результат парсинга: {{ parsedUrl || 'Не найден' }}
                     </h2>
                     <button
                         @click="resetForm"
@@ -51,7 +59,7 @@
                 </div>
 
 
-                Рейтинг: {{ parsedData.data.original.rating }}
+                Рейтинг: {{ parsedData.data.rating || 'Не найден'}}
 
                 <br/>
                 <br/>
@@ -63,14 +71,14 @@
                 >
                     <!--                    {{ parsedData }}-->
                     <pre>
-                        {{ JSON.stringify(parsedData, null, 2) }}
+                        {{ JSON.stringify(parsedData || 'Не найден' , null, 2) }}
                     </pre>
                 </div>
 
                 <h2 class="font-bold text-xl">Отзывы</h2>
                 <div class="max-h-[300px] border-2 border-red-300 p-3 w-full overflow-auto">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div v-for="(review, index) in parsedData.data.original.reviews">
+                        <div v-for="(review, index) in parsedData.data.reviews">
                             {{ review }}
                         </div>
                     </div>
@@ -80,7 +88,7 @@
                 <h2 class="font-bold text-xl">businesAspects</h2>
                 <div class="max-h-[300px] border-2 border-red-300 p-3 w-full overflow-auto">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div v-for="(item, index) in parsedData.data.original.businesAspects">
+                        <div v-for="(item, index) in parsedData.data.businesAspects">
                             {{ item }}
                         </div>
                     </div>
@@ -168,7 +176,6 @@
 <script setup>
 
 import {ref} from 'vue'
-// import {useForm} from '@inertiajs/vue3'
 import {useForm} from '@inertiajs/vue3'
 import axios from 'axios'
 

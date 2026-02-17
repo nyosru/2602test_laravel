@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\BrowserRenderService;
 
+use App\Services\YandexHtmlParserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\Panther\Client as PantherClient;
 use Illuminate\Support\Facades\Cache;
 
+
+
 class YandexParserController extends Controller
 {
 
@@ -26,7 +29,6 @@ class YandexParserController extends Controller
     {
         $this->browser = $browser;
     }
-
 
 
     public function get(Request $request)
@@ -42,7 +44,14 @@ class YandexParserController extends Controller
 //        $data['data'] = $this->get_from_key( $request->url );
 //        $data['data'] = $this->get_from_crawler( $request->url );
 //        $data['data'] = $this->get_from_panther($request->url);
-        $data['data'] = $this->get_from_browsershot($request->url);
+//        $data['data'] = $this->get_from_browsershot($request->url);
+        $html = $this->get_from_api($request->url);
+
+//        dd($html);
+
+        $parser = new YandexHtmlParserService();
+        $data['data'] = $parser->parsingComponyFromMaps($html['html']);
+//        $data['data'] = $this->parsingComponyFromMaps($html['html']);
 
         return response()->json($data);
     }
@@ -155,7 +164,8 @@ class YandexParserController extends Controller
     }
 
 
-    public function get_from_browsershot(string $url, bool $refresh = false){
+    public function get_from_browsershot(string $url, bool $refresh = false)
+    {
 
         if (!$url || !str_contains($url, 'yandex.ru/maps')) {
             return response()->json([
@@ -180,19 +190,68 @@ class YandexParserController extends Controller
 //            function () use ($url) {
 
 //                return Browsershot::url($url)
-                $html = Browsershot::url($url)
-                    ->setChromePath('/usr/bin/chromium')   // ← вот так!
-                    ->noSandbox()
-                    ->disableGpu()
-                    ->windowSize(1920, 1080)
-                    ->waitUntilNetworkIdle()
-                    ->bodyHtml();
+        $html = Browsershot::url($url)
+            ->setChromePath('/usr/bin/chromium')   // ← вот так!
+            ->noSandbox()
+            ->disableGpu()
+            ->windowSize(1920, 1080)
+            ->waitUntilNetworkIdle()
+            ->bodyHtml();
 
 //            });
 
 
     }
 
+
+    public function get_from_api(string $url, bool $refresh = false)
+    {
+
+        if (!$url || !str_contains($url, 'yandex.ru/maps')) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Неверная или отсутствующая ссылка. Должна быть с Яндекс.Карт',
+            ], 400);
+        }
+
+        // Нормализуем ссылку — всегда на вкладку отзывов
+        if (!str_ends_with($url, '/reviews/')) {
+            $url = rtrim($url, '/') . '/reviews/';
+        }
+
+
+        $cacheKey = 'yandex_parse_' . md5($url);
+
+//        if ($refresh) Cache::forget($cacheKey);
+        if (1 == 1) Cache::forget($cacheKey);
+
+        $html = Cache::remember($cacheKey,
+            now()->addHours(6),
+//            now()->addMinute(1),
+            function () use ($url) {
+
+////                return Browsershot::url($url)
+//                $html = Browsershot::url($url)
+//                    ->setChromePath('/usr/bin/chromium')   // ← вот так!
+//                    ->noSandbox()
+//                    ->disableGpu()
+//                    ->windowSize(1920, 1080)
+//                    ->waitUntilNetworkIdle()
+//                    ->bodyHtml();
+
+
+                $html = Http::timeout(120)->post('http://parser:3000/html', [
+                    'url' => $url
+                ])->json()
+                ;
+
+                return $html;
+            });
+
+
+        return $html;
+
+    }
 
 
     public function get_from_panther(string $url, bool $refresh = false)
@@ -223,14 +282,14 @@ class YandexParserController extends Controller
 //            now()->addMinute(1),
             function () use ($url) {
 
-            return $this->browser->getPageHtml($url, [
-                'wait_selector' => '.business-reviews-card-view__review',
-                'wait_timeout'  => 30,
-                'scroll_count'  => 3,
-                'scroll_wait'   => 3,
-            ]);
+                return $this->browser->getPageHtml($url, [
+                    'wait_selector' => '.business-reviews-card-view__review',
+                    'wait_timeout' => 30,
+                    'scroll_count' => 3,
+                    'scroll_wait' => 3,
+                ]);
 
-        });
+            });
 
 //        dump($html);
 //        echo '<div style="border:2px solid red; padding: 10px;">'.$html.'</div>';
