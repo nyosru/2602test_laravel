@@ -7,6 +7,7 @@ use App\Services\BrowserRenderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
+use Spatie\Browsershot\Browsershot;
 use Symfony\Component\DomCrawler\Crawler;
 
 //use Illuminate\Http\Request;
@@ -156,7 +157,6 @@ class YandexParserController extends Controller
 
     public function get_from_browsershot(string $url, bool $refresh = false){
 
-
         if (!$url || !str_contains($url, 'yandex.ru/maps')) {
             return response()->json([
                 'success' => false,
@@ -174,19 +174,21 @@ class YandexParserController extends Controller
 
         if ($refresh) Cache::forget($cacheKey);
 
-        $html = Cache::remember($cacheKey,
-            now()->addHours(6),
+//        $html = Cache::remember($cacheKey,
+////            now()->addHours(6),
 //            now()->addMinute(1),
-            function () use ($url) {
+//            function () use ($url) {
 
-                return $this->browser->getPageHtml($url, [
-                    'wait_selector' => '.business-reviews-card-view__review',
-                    'wait_timeout'  => 30,
-                    'scroll_count'  => 3,
-                    'scroll_wait'   => 3,
-                ]);
+//                return Browsershot::url($url)
+                $html = Browsershot::url($url)
+                    ->setChromePath('/usr/bin/chromium')   // ← вот так!
+                    ->noSandbox()
+                    ->disableGpu()
+                    ->windowSize(1920, 1080)
+                    ->waitUntilNetworkIdle()
+                    ->bodyHtml();
 
-            });
+//            });
 
 
     }

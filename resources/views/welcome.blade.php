@@ -51,6 +51,7 @@
     <div class="w-full flex flex-row flex-wrap xitems-center justify-center mt-10">
 
         <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Модель Товары + API + swager</b>
 
             <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в swagger</a> покликать API,
@@ -60,19 +61,22 @@
         </div>
 
         <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-            <b>vue3 + получение инфы о компании с яндекс карт</b>
-
-            <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в vue3 приложение</a></p>
-                <p>Получаем ссылку на компанию и показываем оценку и отзывы</p>
-
-        </div>
-
-        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>vue3 играем в судоку!</b>
 
             <p><a href="/sudoku/" class="underline text-blue-600" target="_blank">Играть в судоку</a></p>
                 <p>Создать судоку в которое играть норм</p>
                 <p>Есть тех долг небольшой, функционал меня как игрока устраивает</p>
+
+        </div>
+
+
+        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <span class="float-right bg-yellow-400 p-1 rounded">Идёт разработка</span>
+            <b>vue3 + получение инфы о компании с яндекс карт</b>
+
+            <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в vue3 приложение</a></p>
+            <p>Получаем ссылку на компанию и показываем оценку и отзывы</p>
 
         </div>
 
