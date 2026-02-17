@@ -95,6 +95,16 @@ border-b-2 border-gray-100
 <!--                                Log in-->
 <!--                            </Link>-->
 
+                            <Link
+                                :href="route('test.index')"
+                                class="
+                            rounded-md
+                            px-3 py-2 text-black
+"
+                            >
+                                На главную тест стенда Laravel
+                            </Link>
+
 <!--                            <Link-->
 <!--                                v-if="canRegister"-->
 <!--                                :href="route('register')"-->

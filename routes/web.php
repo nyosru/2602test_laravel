@@ -23,7 +23,7 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::get('', function () {
     return view('welcome');
-});
+})->name('test.index');
 
 Route::prefix('vue3')->group(function () {
     Route::get('', function () {
