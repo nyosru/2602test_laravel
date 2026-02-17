@@ -44,7 +44,7 @@
 <div class="container mx-auto">
     <h2 class="mt-10">Тестовый Laravel стенд <img src="/img/cat.png" class="inline max-h-[3rem] mx-2"/>Сергея Бакланова
         <a href="https://php-cat.com" target="_blank" class="underline text-blue-600">php-cat.com</a></h2>
-    <p><a href="https://php-cat.com" target="_blank" class="underline text-blue-600">
+    <p><a href="https://github.com/nyosru/2602test_laravel" target="_blank" class="underline text-blue-600">
             GitHub код этого сайта со всеми блоками
         </a></p>
 
