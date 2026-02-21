@@ -48,9 +48,12 @@
             GitHub код этого сайта со всеми блоками
         </a></p>
 
-    <div class="w-full flex flex-row flex-wrap xitems-center justify-center mt-10">
+    <div class="w-full text-lg flex flex-row flex-wrap xitems-center justify-center mt-10">
 
-        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+        <div class="
+{{--        w-64--}}
+        w-1/3
+        min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Модель Товары + API + swager</b>
 
@@ -61,7 +64,10 @@
 
         </div>
 
-        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+        <div class="
+         {{--        w-64--}}
+        w-1/3
+         min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>vue3 играем в&nbsp;судоку!</b>
 
@@ -72,10 +78,13 @@
         </div>
 
 
-        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+        <div class="
+         {{--        w-64--}}
+        w-1/3
+         min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
 {{--            <span class="float-right bg-yellow-400 p-1 rounded">Идёт разработка</span>--}}
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
-            <b>vue3 + получение инфы о&nbsp;компании с&nbsp;яндекс карт</b>
+            <b class="">vue3 + получение инфы о&nbsp;компании с&nbsp;яндекс карт</b>
 
             <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в&nbsp;vue3 приложение</a></p>
             <p>Получаем ссылку на&nbsp;компанию и&nbsp;показываем оценку и&nbsp;отзывы</p>
@@ -83,7 +92,10 @@
         </div>
 
 
-        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+        <div class="
+         {{--        w-64--}}
+        w-1/3
+        min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
 {{--            <span class="float-right bg-yellow-400 p-1 rounded">Идёт разработка</span>--}}
 {{--            <span class="float-right bg-green-400 p-1 rounded">Готово</span>--}}
 
