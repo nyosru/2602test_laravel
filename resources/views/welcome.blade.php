@@ -54,19 +54,19 @@
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Модель Товары + API + swager</b>
 
-            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в swagger</a>
+            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger</a>
                 покликать API,
-                ключевая модель Product (остальные прицепом появились из других тест
+                ключевая модель Product (остальные прицепом появились из&nbsp;других тест
                 заданий), слоёная структура проекта контроллер, сервис, репозиторий</p>
 
         </div>
 
         <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
-            <b>vue3 играем в судоку!</b>
+            <b>vue3 играем в&nbsp;судоку!</b>
 
-            <p><a href="/sudoku/" class="underline text-blue-600" target="_blank">Играть в судоку</a></p>
-            <p>Создать судоку в которое играть норм</p>
+            <p><a href="/sudoku/" class="underline text-blue-600" target="_blank">Играть в&nbsp;судоку</a></p>
+            <p>Создать судоку в&nbsp;которое играть норм</p>
             <p>Есть тех долг небольшой, функционал меня как игрока устраивает</p>
 
         </div>
@@ -75,10 +75,24 @@
         <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
 {{--            <span class="float-right bg-yellow-400 p-1 rounded">Идёт разработка</span>--}}
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
-            <b>vue3 + получение инфы о компании с яндекс карт</b>
+            <b>vue3 + получение инфы о&nbsp;компании с&nbsp;яндекс карт</b>
 
-            <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в vue3 приложение</a></p>
-            <p>Получаем ссылку на компанию и показываем оценку и отзывы</p>
+            <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в&nbsp;vue3 приложение</a></p>
+            <p>Получаем ссылку на&nbsp;компанию и&nbsp;показываем оценку и&nbsp;отзывы</p>
+
+        </div>
+
+
+        <div class="w-64 min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+{{--            <span class="float-right bg-yellow-400 p-1 rounded">Идёт разработка</span>--}}
+{{--            <span class="float-right bg-green-400 p-1 rounded">Готово</span>--}}
+
+<div>
+            <b>Пакеты composer в&nbsp;Packagist</b>
+        </div>
+            <img src="/img/logo-composer.png" class="float-left w-1/4" />
+            <p><a href="https://packagist.org/users/Nyos/packages/" class="underline text-blue-600" target="_blank">nyos в Packagist</a></p>
+            <p>с 2019 года пишу композер пакеты, версионирование, сложные связки оч.удобно хранить и&nbsp;использовать</p>
 
         </div>
 
