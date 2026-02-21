@@ -61,10 +61,12 @@
 
 <div class="container mx-auto">
 
-    <div class="text-2xl">
-        <h2 class="mt-10">Тестовый Laravel стенд <img src="/img/cat.png" class="inline max-h-[3rem] mx-2"/>Сергея
-            Бакланова
-            <a href="https://php-cat.com" target="_blank" class="underline text-blue-600">php-cat.com</a></h2>
+    <div class="text-2xl text-center md:text-left">
+        <h2 class="mt-10">Тестовый Laravel стенд
+            <span class="whitespace-nowrap"><img src="/img/cat.png"
+                                                 class="inline max-h-[3rem] mx-2"/>Сергея Бакланова</span>
+            <a href="https://php-cat.com" target="_blank"
+               class="whitespace-nowrap underline text-blue-600">php-cat.com</a></h2>
         <p><a href="https://github.com/nyosru/2602test_laravel" target="_blank" class="underline text-blue-600">
                 GitHub код этого сайта со всеми блоками
             </a></p>
@@ -142,6 +144,8 @@
 
     </div>
 </div>
-
+<br/>
+<br/>
+<br/>
 </body>
 </html>
