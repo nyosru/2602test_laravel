@@ -62,17 +62,18 @@
 <div class="container mx-auto">
 
     <div class="text-2xl">
-    <h2 class="mt-10">Тестовый Laravel стенд <img src="/img/cat.png" class="inline max-h-[3rem] mx-2"/>Сергея Бакланова
-        <a href="https://php-cat.com" target="_blank" class="underline text-blue-600">php-cat.com</a></h2>
-    <p><a href="https://github.com/nyosru/2602test_laravel" target="_blank" class="underline text-blue-600">
-            GitHub код этого сайта со всеми блоками
-        </a></p>
+        <h2 class="mt-10">Тестовый Laravel стенд <img src="/img/cat.png" class="inline max-h-[3rem] mx-2"/>Сергея
+            Бакланова
+            <a href="https://php-cat.com" target="_blank" class="underline text-blue-600">php-cat.com</a></h2>
+        <p><a href="https://github.com/nyosru/2602test_laravel" target="_blank" class="underline text-blue-600">
+                GitHub код этого сайта со всеми блоками
+            </a></p>
     </div>
 
     <div class="w-full text-lg flex flex-row flex-wrap xitems-center justify-center mt-10">
 
         <div class="
-        w-1/3
+     w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
         min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Модель Товары + API + swager</b>
@@ -85,7 +86,7 @@
         </div>
 
         <div class="
-        w-1/3
+         w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
          min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>vue3 играем в&nbsp;судоку!</b>
@@ -98,7 +99,7 @@
 
 
         <div class="
-        w-1/3
+         w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
          min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b class="">vue3 + получение инфы о&nbsp;компании с&nbsp;яндекс карт</b>
@@ -110,20 +111,22 @@
 
 
         <div class="
-        w-1/3
+       w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
         min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
 
             <div>
                 <b>GitHub</b>
             </div>
             <img src="/img/github.png" class="float-left w-1/4 mr-2"/>
-            <p><a href="https://github.com/nyosru" class="underline text-blue-600" target="_blank">репозитории в GitHub</a></p>
-            <p>весь код хранится в&nbsp;гите, автоматизация ci/cd экономят массу времени для&nbsp;обновления протестированного кода на&nbsp;серверах в&nbsp;тест и&nbsp;прод окружении</p>
+            <p><a href="https://github.com/nyosru" class="underline text-blue-600" target="_blank">репозитории в
+                    GitHub</a></p>
+            <p>весь код хранится в&nbsp;гите, автоматизация ci/cd экономят массу времени для&nbsp;обновления
+                протестированного кода на&nbsp;серверах в&nbsp;тест и&nbsp;прод окружении</p>
 
         </div>
 
         <div class="
-        w-1/3
+        w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
         min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
 
             <div>
