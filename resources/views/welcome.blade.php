@@ -143,6 +143,64 @@
         </div>
 
     </div>
+
+        <!-- Адаптивный контейнер: на десктопе — рядом, на мобилке — один под другим -->
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+
+            <!-- Текст вопроса (слева) -->
+            <div class="flex-1 max-w-2xl">
+                <p class="text-lg text-gray-800 mb-4"><strong>Вопрос:</strong></p>
+
+                <p class="text-gray-700 mb-4">
+                    1. Есть Laravel сайт (***) и CRM (***) на shared-хостинге с FTP.
+                    <br/>
+                    Нужно перенести на VPS и выстроить правильную инфраструктуру.
+                </p>
+
+                <p class="text-gray-700 mb-4"><strong>Что требуется:</strong></p>
+
+                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                    <li>Ubuntu 22.04</li>
+                    <li>Nginx + PHP 8.2 + MySQL</li>
+                    <li>Redis + Supervisor</li>
+                    <li>Production + Staging (отдельные окружения)</li>
+                    <li>GitHub (main / staging)</li>
+                    <li>Автодеплой</li>
+                    <li>Безопасные доступы (без прямого доступа к продакшену)</li>
+                    <li>Бэкапы</li>
+                </ul>
+
+                <p class="text-gray-700 mb-4">
+                    В видео в формате “говорящей головы” (1–2 минуты) прошу кратко объяснить:
+                </p>
+
+                <p class="text-gray-700 mb-4">
+                    1. Как вы построите архитектуру.<br/>
+                    2. Как будет организован деплой.<br/>
+                    3. Как вы изолируете staging от production.
+                </p>
+
+                <p class="font-bold text-gray-900">Ответ:</p>
+            </div>
+
+            <!-- Видео (справа) -->
+            <div class="w-full lg:w-2/5 lg:sticky lg:top-8">
+{{--                <div class="aspect-w-16 aspect-h-12 shadow-xl rounded-lg overflow-hidden">--}}
+                    <iframe
+                        src="https://vkvideo.ru/video_ext.php?oid=-73827323&id=456239023&hash=198d61ff7b00ab6c&hd=1"
+                        width="640"
+                        height="360"
+                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
+                        frameborder="0"
+                        allowfullscreen
+{{--                        class="w-full h-full"--}}
+                    ></iframe>
+{{--                </div>--}}
+            </div>
+
+        </div>
+
+
 </div>
 <br/>
 <br/>

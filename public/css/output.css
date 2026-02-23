@@ -1167,10 +1167,6 @@ input:where([type='file']):focus {
   width: 1.5rem;
 }
 
-.w-64 {
-  width: 16rem;
-}
-
 .w-\[24px\] {
   width: 24px;
 }
@@ -1293,6 +1289,14 @@ input:where([type='file']):focus {
   cursor: pointer;
 }
 
+.list-inside {
+  list-style-position: inside;
+}
+
+.list-disc {
+  list-style-type: disc;
+}
+
 .grid-cols-1 {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
@@ -1371,6 +1375,10 @@ input:where([type='file']):focus {
 
 .gap-6 {
   gap: 1.5rem;
+}
+
+.gap-8 {
+  gap: 2rem;
 }
 
 .gap-x-2 {
@@ -1624,17 +1632,8 @@ input:where([type='file']):focus {
   background-color: rgb(253 224 71 / var(--tw-bg-opacity, 1));
 }
 
-.bg-yellow-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(250 204 21 / var(--tw-bg-opacity, 1));
-}
-
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
-}
-
-.bg-gradient-to-br {
-  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
 
 .bg-gradient-to-r {
@@ -1680,10 +1679,6 @@ input:where([type='file']):focus {
 
 .to-white {
   --tw-gradient-to: #fff var(--tw-gradient-to-position);
-}
-
-.to-yellow-200 {
-  --tw-gradient-to: #fef08a var(--tw-gradient-to-position);
 }
 
 .fill-current {
@@ -2486,16 +2481,12 @@ input:where([type='file']):focus {
     height: 1.5rem;
   }
 
-  .sm\:w-full {
-    width: 100%;
-  }
-
-  .sm\:w-1\/3 {
-    width: 33.333333%;
-  }
-
   .sm\:w-1\/2 {
     width: 50%;
+  }
+
+  .sm\:w-full {
+    width: 100%;
   }
 
   .sm\:max-w-2xl {
@@ -2637,6 +2628,14 @@ input:where([type='file']):focus {
 }
 
 @media (min-width: 1024px) {
+  .lg\:sticky {
+    position: sticky;
+  }
+
+  .lg\:top-8 {
+    top: 2rem;
+  }
+
   .lg\:col-start-2 {
     grid-column-start: 2;
   }
@@ -2649,6 +2648,10 @@ input:where([type='file']):focus {
     width: 33.333333%;
   }
 
+  .lg\:w-2\/5 {
+    width: 40%;
+  }
+
   .lg\:max-w-7xl {
     max-width: 80rem;
   }
@@ -2659,6 +2662,10 @@ input:where([type='file']):focus {
 
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lg\:flex-row {
+    flex-direction: row;
   }
 
   .lg\:flex-col {
