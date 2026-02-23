@@ -144,8 +144,11 @@
 
     </div>
 
+    <br/>
+    <br/>
+
         <!-- Адаптивный контейнер: на десктопе — рядом, на мобилке — один под другим -->
-        <div class="flex flex-col lg:flex-row gap-8 items-start my-6">
+        <div class="flex flex-col lg:flex-row gap-8 items-start ">
 
             <!-- Текст вопроса (слева) -->
             <div class="flex-1 max-w-2xl">
