@@ -92,5 +92,49 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'code', type: 'integer', example: 201),
     ]
 )]
+#[OA\Schema(
+    schema: 'BalanceByCurrencyResource',
+    type: 'object',
+    description: 'Баланс в конкретной валюте',
+    properties: [
+        new OA\Property(property: 'currency', type: 'string', example: 'RUB'),
+        new OA\Property(property: 'balance', type: 'number', format: 'float', example: 12500.50),
+    ]
+)]
+#[OA\Schema(
+    schema: 'PaymentBalanceData',
+    type: 'object',
+    description: 'Данные баланса пользователя',
+    properties: [
+        new OA\Property(property: 'user_id', type: 'integer', example: 10),
+        new OA\Property(
+            property: 'balances',
+            type: 'array',
+            description: 'Список балансов по валютам',
+            items: new OA\Items(ref: '#/components/schemas/BalanceByCurrencyResource')
+        ),
+    ]
+)]
+#[OA\Schema(
+    schema: 'PaymentBalanceSuccessResponse',
+    type: 'object',
+    description: 'Успешный ответ с балансом пользователя',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: true),
+        new OA\Property(property: 'data', ref: '#/components/schemas/PaymentBalanceData'),
+        new OA\Property(property: 'message', type: 'string', example: 'Баланс пользователя получен успешно'),
+        new OA\Property(property: 'code', type: 'integer', example: 200),
+    ]
+)]
+#[OA\Schema(
+    schema: 'PaymentDeletedResponse',
+    type: 'object',
+    description: 'Платеж успешно удалён',
+    properties: [
+        new OA\Property(property: 'success', type: 'boolean', example: true),
+        new OA\Property(property: 'message', type: 'string', example: 'Платеж успешно удалён'),
+        new OA\Property(property: 'code', type: 'integer', example: 200),
+    ]
+)]
 class PaymentResponseSchemas {}
 

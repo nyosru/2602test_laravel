@@ -351,7 +351,14 @@
                         }
                     },
                     "401": {
-                        "description": "Не авторизован"
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -427,13 +434,78 @@
                         }
                     },
                     "400": {
-                        "description": "Ошибка запроса"
+                        "description": "Ошибка запроса",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Не авторизован"
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Ошибка валидации"
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/payments/balance": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Получить текущий баланс пользователя",
+                "description": "Публичный эндпоинт. Возвращает текущий баланс пользователя по платежам со статусом completed. Пользователь указывается только по user_id.",
+                "operationId": "a3e5914513908952e9e8667fd6f07336",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID пользователя, для которого нужно получить баланс.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Баланс успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentBalanceSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -469,10 +541,24 @@
                         }
                     },
                     "401": {
-                        "description": "Не авторизован"
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Платеж не найден"
+                        "description": "Платеж не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -496,13 +582,34 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Платеж успешно удалён"
+                        "description": "Платеж успешно удалён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentDeletedResponse"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Не авторизован"
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Платеж не найден"
+                        "description": "Платеж не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -579,16 +686,44 @@
                         }
                     },
                     "401": {
-                        "description": "Не авторизован"
+                        "description": "Не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Доступ к платежу запрещён"
+                        "description": "Доступ к платежу запрещён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ForbiddenError"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Платеж не найден"
+                        "description": "Платеж не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Ошибка валидации"
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1870,6 +2005,77 @@
                     "code": {
                         "type": "integer",
                         "example": 201
+                    }
+                },
+                "type": "object"
+            },
+            "BalanceByCurrencyResource": {
+                "description": "Баланс в конкретной валюте",
+                "properties": {
+                    "currency": {
+                        "type": "string",
+                        "example": "RUB"
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 12500.5
+                    }
+                },
+                "type": "object"
+            },
+            "PaymentBalanceData": {
+                "description": "Данные баланса пользователя",
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "balances": {
+                        "description": "Список балансов по валютам",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BalanceByCurrencyResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PaymentBalanceSuccessResponse": {
+                "description": "Успешный ответ с балансом пользователя",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PaymentBalanceData"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Баланс пользователя получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "PaymentDeletedResponse": {
+                "description": "Платеж успешно удалён",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Платеж успешно удалён"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
                     }
                 },
                 "type": "object"

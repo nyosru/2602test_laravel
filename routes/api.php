@@ -42,6 +42,11 @@ Route::
         Route::get('products/{product}', [ProductController::class, 'showPublic'])->name('products.public.show');
     });
 
+    // Платежи: публичный эндпоинт баланса (без токена)
+    // Важно: объявляем ДО apiResource('payments'), иначе "balance" может матчиться как {payment}
+    Route::get('payments/balance', [PaymentController::class, 'balance'])
+        ->name('payments.balance');
+
 // Защищенные маршруты (требуется Bearer Token)
     Route::middleware(['auth:sanctum'])->group(function () {
         // Аутентификация

@@ -7,6 +7,7 @@ use App\Models\Payment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OA;
 
 class PaymentController extends Controller
@@ -54,7 +55,11 @@ class PaymentController extends Controller
                 description: "Список платежей успешно получен",
                 content: new OA\JsonContent(ref: "#/components/schemas/PaymentsListSuccessResponse")
             ),
-            new OA\Response(response: 401, description: "Не авторизован"),
+            new OA\Response(
+                response: 401,
+                description: "Не авторизован",
+                content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedError")
+            ),
         ]
     )]
     public function index(Request $request): JsonResponse
@@ -78,6 +83,71 @@ class PaymentController extends Controller
         return $this->paginatedResponse(
             $payments,
             'Список платежей получен успешно'
+        );
+    }
+
+    /**
+     * Получить текущий баланс пользователя
+     */
+    #[OA\Get(
+        path: "/api/payments/balance",
+        summary: "Получить текущий баланс пользователя",
+        description: "Публичный эндпоинт. Возвращает текущий баланс пользователя по платежам со статусом completed. Пользователь указывается только по user_id.",
+        tags: ["Payments"],
+        parameters: [
+            new OA\Parameter(
+                name: "user_id",
+                description: "ID пользователя, для которого нужно получить баланс.",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "integer", example: 2)
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Баланс успешно получен",
+                content: new OA\JsonContent(ref: "#/components/schemas/PaymentBalanceSuccessResponse")
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Ошибка валидации",
+                content: new OA\JsonContent(ref: "#/components/schemas/ValidationError")
+            ),
+        ]
+    )]
+    public function balance(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        $userId = (int) $validated['user_id'];
+
+        $rows = Payment::query()
+            ->where('user_id', $userId)
+            ->where('status', 'completed')
+            ->selectRaw("
+                currency,
+                COALESCE(SUM(CASE WHEN direction = 'to' THEN amount ELSE 0 END), 0)
+              - COALESCE(SUM(CASE WHEN direction = 'from' THEN amount ELSE 0 END), 0) as balance
+            ")
+            ->groupBy('currency')
+            ->get();
+
+        $balances = $rows->map(static function (Payment $payment) {
+            return [
+                'currency' => $payment->currency,
+                'balance'  => (float) $payment->balance,
+            ];
+        })->values();
+
+        return $this->successResponse(
+            [
+                'user_id'  => $userId,
+                'balances' => $balances,
+            ],
+            'Баланс пользователя получен успешно'
         );
     }
 
@@ -144,9 +214,21 @@ class PaymentController extends Controller
                 description: "Платеж успешно создан",
                 content: new OA\JsonContent(ref: "#/components/schemas/PaymentCreatedResponse")
             ),
-            new OA\Response(response: 400, description: "Ошибка запроса"),
-            new OA\Response(response: 401, description: "Не авторизован"),
-            new OA\Response(response: 422, description: "Ошибка валидации"),
+            new OA\Response(
+                response: 400,
+                description: "Ошибка запроса",
+                content: new OA\JsonContent(ref: "#/components/schemas/ErrorResponse")
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Не авторизован",
+                content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedError")
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Ошибка валидации",
+                content: new OA\JsonContent(ref: "#/components/schemas/ValidationError")
+            ),
         ]
     )]
     public function store(Request $request): JsonResponse
@@ -164,19 +246,39 @@ class PaymentController extends Controller
 
         $userId = $validated['user_id'] ?? $authUser->id;
 
-        $payment = Payment::create([
-            'user_id' => $userId,
-            'direction' => $validated['direction'],
-            'amount' => $validated['amount'],
-            'currency' => $validated['currency'] ?? 'RUB',
-            'status' => $validated['status'] ?? 'pending',
-            'description' => $validated['description'] ?? null,
-        ]);
+        return DB::transaction(function () use ($validated, $userId) {
+            // Если деньги списываются от пользователя — проверяем баланс
+            if ($validated['direction'] === 'from') {
+                $balance = Payment::query()
+                    ->where('user_id', $userId)
+                    ->where('status', 'completed')
+                    ->selectRaw("
+                        COALESCE(SUM(CASE WHEN direction = 'to' THEN amount ELSE 0 END), 0)
+                      - COALESCE(SUM(CASE WHEN direction = 'from' THEN amount ELSE 0 END), 0) as balance
+                    ")
+                    ->value('balance');
 
-        return $this->createdResponse(
-            $payment,
-            'Платеж успешно создан'
-        );
+                if ($balance < $validated['amount']) {
+                    return $this->validationErrorResponse([
+                        'amount' => ['Недостаточно средств на балансе для списания.'],
+                    ]);
+                }
+            }
+
+            $payment = Payment::create([
+                'user_id' => $userId,
+                'direction' => $validated['direction'],
+                'amount' => $validated['amount'],
+                'currency' => $validated['currency'] ?? 'RUB',
+                'status' => $validated['status'] ?? 'pending',
+                'description' => $validated['description'] ?? null,
+            ]);
+
+            return $this->createdResponse(
+                $payment,
+                'Платеж успешно создан'
+            );
+        });
     }
 
     /**
@@ -201,8 +303,16 @@ class PaymentController extends Controller
                 description: "Платеж успешно получен",
                 content: new OA\JsonContent(ref: "#/components/schemas/PaymentSuccessResponse")
             ),
-            new OA\Response(response: 401, description: "Не авторизован"),
-            new OA\Response(response: 404, description: "Платеж не найден"),
+            new OA\Response(
+                response: 401,
+                description: "Не авторизован",
+                content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedError")
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Платеж не найден",
+                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+            ),
         ]
     )]
     public function show(Request $request, Payment $payment): JsonResponse
@@ -278,10 +388,26 @@ class PaymentController extends Controller
                 description: "Платеж успешно обновлён",
                 content: new OA\JsonContent(ref: "#/components/schemas/PaymentSuccessResponse")
             ),
-            new OA\Response(response: 401, description: "Не авторизован"),
-            new OA\Response(response: 403, description: "Доступ к платежу запрещён"),
-            new OA\Response(response: 404, description: "Платеж не найден"),
-            new OA\Response(response: 422, description: "Ошибка валидации"),
+            new OA\Response(
+                response: 401,
+                description: "Не авторизован",
+                content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedError")
+            ),
+            new OA\Response(
+                response: 403,
+                description: "Доступ к платежу запрещён",
+                content: new OA\JsonContent(ref: "#/components/schemas/ForbiddenError")
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Платеж не найден",
+                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Ошибка валидации",
+                content: new OA\JsonContent(ref: "#/components/schemas/ValidationError")
+            ),
         ]
     )]
     public function update(Request $request, $payment_id): JsonResponse
@@ -326,9 +452,21 @@ class PaymentController extends Controller
             )
         ],
         responses: [
-            new OA\Response(response: 200, description: "Платеж успешно удалён"),
-            new OA\Response(response: 401, description: "Не авторизован"),
-            new OA\Response(response: 404, description: "Платеж не найден"),
+            new OA\Response(
+                response: 200,
+                description: "Платеж успешно удалён",
+                content: new OA\JsonContent(ref: "#/components/schemas/PaymentDeletedResponse")
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Не авторизован",
+                content: new OA\JsonContent(ref: "#/components/schemas/UnauthorizedError")
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Платеж не найден",
+                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+            ),
         ]
     )]
     public function destroy(Request $request, $payment_id ): JsonResponse
