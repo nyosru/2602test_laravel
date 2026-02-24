@@ -89,6 +89,24 @@
         </div>
 
         <div class="
+     w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
+        min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <span class="float-right bg-green-400 p-1 rounded">Готово</span>
+
+            <b>Модель Payment + API + swager</b>
+
+            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger</a>
+
+                <br/>
+
+                <b>Описание задачи:</b> вам необходимо написать код, по&nbsp;которому происходит зачисление и&nbsp;списание крипто-баланса пользователя, с&nbsp;учетом рисков
+            <br/>
+                добавил свагер покликать&nbsp;API</p>
+            </p>
+
+        </div>
+
+        <div class="
          w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
          min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
