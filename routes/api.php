@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\YandexParserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,9 @@ Route::
         Route::delete('products/{product}/force', [ProductController::class, 'forceDestroy'])
             ->name('products.force-destroy')
             ->withTrashed();
+
+        // Платежи пользователя
+        Route::apiResource('payments', PaymentController::class);
 
     });
 

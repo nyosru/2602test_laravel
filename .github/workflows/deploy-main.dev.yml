@@ -58,7 +58,7 @@ jobs:
             docker exec ${{ env.DOCKER_CONTAINER }} composer install --optimize-autoloader
 
             # Миграции
-            docker exec ${{ env.DOCKER_CONTAINER }} php artisan migrate --force
+            docker exec ${{ env.DOCKER_CONTAINER }} php artisan migrate:fresh --seed --force
 
             docker exec ${{ env.DOCKER_CONTAINER }} npm install
             docker exec ${{ env.DOCKER_CONTAINER }} npm run build

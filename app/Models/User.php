@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -58,6 +59,32 @@ class User extends Authenticatable
     public function products()
     {
         return $this->hasMany(\App\Models\Product::class);
+    }
+
+    /**
+     * Все платежи пользователя
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Входящие платежи (в сторону пользователя)
+     */
+    public function incomingPayments()
+    {
+        return $this->hasMany(Payment::class)
+            ->where('direction', 'to');
+    }
+
+    /**
+     * Исходящие платежи (от пользователя)
+     */
+    public function outgoingPayments()
+    {
+        return $this->hasMany(Payment::class)
+            ->where('direction', 'from');
     }
 
     /**

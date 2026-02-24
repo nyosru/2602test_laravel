@@ -14,10 +14,12 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'description', 'price'];
+    protected $fillable = ['name', 'description', 'price', 'stock', 'is_active'];
 
     protected $casts = [
-        'price' => 'float',
+        'price'     => 'float',
+        'stock'     => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function dealItems() {

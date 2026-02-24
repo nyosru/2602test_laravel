@@ -61,7 +61,7 @@ trait ApiResponse
     protected function notFoundResponse(string $message = null): JsonResponse
     {
         return $this->errorResponse(
-            message: $message ?? 'Ресурс не найден',
+            message: $message ?? 'Не найдено',
             code: 404
         );
     }

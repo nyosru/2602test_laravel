@@ -36,6 +36,7 @@
 </head>
 <body class="font-sans animate-gradient-x min-h-[99vh]
     antialiased
+
 {{--    bg-gradient-to-br--}}
 {{--    from-blue-200 to-yellow-200--}}
 
@@ -147,82 +148,106 @@
     <br/>
     <br/>
 
-        <!-- Адаптивный контейнер: на десктопе — рядом, на мобилке — один под другим -->
-        <div class="flex flex-col lg:flex-row gap-8 items-start ">
+    {{-- Пример использования tpetry/laravel-mysql-explain для модели Product --}}
+{{--    <x-product-explain />--}}
 
-            <!-- Текст вопроса (слева) -->
-            <div class="flex-1 max-w-2xl">
-                <p class="text-lg text-gray-800 mb-4"><strong>Вопрос:</strong></p>
+{{--    <br/>--}}
+{{--    <br/>--}}
 
-                <p class="text-gray-700 mb-4">
-                    1. Есть Laravel сайт (***) и CRM (***) на shared-хостинге с FTP.
-                    <br/>
-                    Нужно перенести на VPS и выстроить правильную инфраструктуру.
-                </p>
+    <!-- Адаптивный контейнер: на десктопе — рядом, на мобилке — один под другим -->
+    <div class="flex flex-col lg:flex-row gap-8 items-start ">
 
-                <p class="text-gray-700 mb-4"><strong>Что требуется:</strong></p>
+        <!-- Текст вопроса (слева) -->
+        <div class="flex-1 max-w-2xl">
+            <p class="text-lg text-gray-800 mb-4"><strong>Вопрос:</strong></p>
 
-                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
-                    <li>Ubuntu 22.04</li>
-                    <li>Nginx + PHP 8.2 + MySQL</li>
-                    <li>Redis + Supervisor</li>
-                    <li>Production + Staging (отдельные окружения)</li>
-                    <li>GitHub (main / staging)</li>
-                    <li>Автодеплой</li>
-                    <li>Безопасные доступы (без прямого доступа к продакшену)</li>
-                    <li>Бэкапы</li>
-                </ul>
+            <p class="text-gray-700 mb-4">
+                1. Есть Laravel сайт (***) и CRM (***) на shared-хостинге с FTP.
+                <br/>
+                Нужно перенести на VPS и выстроить правильную инфраструктуру.
+            </p>
 
-                <p class="text-gray-700 mb-4">
-                    В видео в формате “говорящей головы” (1–2 минуты) прошу кратко объяснить:
-                </p>
+            <p class="text-gray-700 mb-4"><strong>Что требуется:</strong></p>
 
-                <p class="text-gray-700 mb-4">
-                    1. Как вы построите архитектуру.<br/>
-                    2. Как будет организован деплой.<br/>
-                    3. Как вы изолируете staging от production.
-                </p>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                <li>Ubuntu 22.04</li>
+                <li>Nginx + PHP 8.2 + MySQL</li>
+                <li>Redis + Supervisor</li>
+                <li>Production + Staging (отдельные окружения)</li>
+                <li>GitHub (main / staging)</li>
+                <li>Автодеплой</li>
+                <li>Безопасные доступы (без прямого доступа к продакшену)</li>
+                <li>Бэкапы</li>
+            </ul>
 
-            </div>
+            <p class="text-gray-700 mb-4">
+                В видео в формате “говорящей головы” (1–2 минуты) прошу кратко объяснить:
+            </p>
 
-            <!-- Видео (справа) -->
-            <div class="w-full lg:w-2/5 lg:sticky lg:top-8">
-
-                <p class="font-bold text-gray-900">Ответ:</p>
-
-{{--                <div class="aspect-w-16 aspect-h-12 shadow-xl rounded-lg overflow-hidden">--}}
-                    <iframe
-                        src="https://vkvideo.ru/video_ext.php?oid=-73827323&id=456239023&hash=198d61ff7b00ab6c&hd=1"
-                        width="640"
-                        height="360"
-                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
-                        frameborder="0"
-                        allowfullscreen
-{{--                        class="w-full h-full"--}}
-                    ></iframe>
-{{--                </div>--}}
-            </div>
+            <p class="text-gray-700 mb-4">
+                1. Как вы построите архитектуру.<br/>
+                2. Как будет организован деплой.<br/>
+                3. Как вы изолируете staging от production.
+            </p>
 
         </div>
 
+        <!-- Видео (справа) -->
+        <div class="w-full lg:w-2/5 lg:sticky lg:top-8">
+
+            <p class="font-bold text-gray-900">Ответ:</p>
+
+            {{--                <div class="aspect-w-16 aspect-h-12 shadow-xl rounded-lg overflow-hidden">--}}
+            <iframe
+                src="https://vkvideo.ru/video_ext.php?oid=-73827323&id=456239023&hash=198d61ff7b00ab6c&hd=1"
+                width="640"
+                height="360"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
+                frameborder="0"
+                allowfullscreen
+                {{--                        class="w-full h-full"--}}
+            ></iframe>
+            {{--                </div>--}}
+        </div>
+
+    </div>
+
 
 </div>
+
+
 <br/>
 <br/>
 <br/>
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106970560', 'ym');
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+            if (document.scripts[j].src === r) {
+                return;
+            }
+        }
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=106970560', 'ym');
 
-    ym(106970560, 'init', {ssr:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+    ym(106970560, 'init', {
+        ssr: true,
+        clickmap: true,
+        ecommerce: "dataLayer",
+        referrer: document.referrer,
+        url: location.href,
+        accurateTrackBounce: true,
+        trackLinks: true
+    });
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/106970560" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/106970560" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
 <!-- /Yandex.Metrika counter -->
 
 </body>

@@ -294,6 +294,310 @@
                 ]
             }
         },
+        "/api/payments": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Получить список платежей",
+                "description": "Возвращает список платежей пользователя с пагинацией. По умолчанию используются платежи текущего пользователя.",
+                "operationId": "afcbc19a07bf33c2fcb73b5c438b476c",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID пользователя, для которого нужно получить платежи. По умолчанию — текущий пользователь.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "direction",
+                        "in": "query",
+                        "description": "Направление платежей: to — в сторону пользователя, from — от пользователя.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "to",
+                                "from"
+                            ],
+                            "example": "to"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Количество элементов на странице (макс. 100)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список платежей успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentsListSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Создать платёж",
+                "description": "Создаёт платёж в сторону пользователя или от пользователя. По умолчанию платёж относится к текущему пользователю.",
+                "operationId": "985b848b4cb6ca6115cf4ea71e314c0c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "direction",
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "description": "ID пользователя, к которому относится платёж. Если не указано — используется текущий пользователь.",
+                                        "type": "integer",
+                                        "example": 10,
+                                        "nullable": true
+                                    },
+                                    "direction": {
+                                        "description": "Направление платежа: to — в сторону пользователя, from — от пользователя.",
+                                        "type": "string",
+                                        "enum": [
+                                            "to",
+                                            "from"
+                                        ],
+                                        "example": "to"
+                                    },
+                                    "amount": {
+                                        "description": "Сумма платежа",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1500.5
+                                    },
+                                    "currency": {
+                                        "description": "Валюта в формате ISO 4217 (3 символа). По умолчанию RUB.",
+                                        "type": "string",
+                                        "example": "RUB"
+                                    },
+                                    "status": {
+                                        "description": "Статус платежа. По умолчанию pending.",
+                                        "type": "string",
+                                        "example": "pending"
+                                    },
+                                    "description": {
+                                        "description": "Описание платежа",
+                                        "type": "string",
+                                        "example": "Оплата услуги",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Платеж успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentCreatedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                }
+            }
+        },
+        "/api/payments/{id}": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Получить платёж по ID",
+                "description": "Показать один платёж",
+                "operationId": "33da95d13a42b4c3898427d7cb9516a8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID платежа",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Платеж успешно получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "404": {
+                        "description": "Платеж не найден"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Удалить платёж",
+                "description": "Удалить платёж",
+                "operationId": "4db359e13e73e2832ead474820546c40",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID платежа",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Платеж успешно удалён"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "404": {
+                        "description": "Платеж не найден"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Обновить платёж",
+                "description": "Частичное обновление платежа.",
+                "operationId": "f944e15bb4846164dd54961a3beed951",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID платежа",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "direction": {
+                                        "description": "Направление платежа: to — в сторону пользователя, from — от пользователя.",
+                                        "type": "string",
+                                        "enum": [
+                                            "to",
+                                            "from"
+                                        ],
+                                        "example": "to"
+                                    },
+                                    "amount": {
+                                        "description": "Сумма платежа",
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1500.5
+                                    },
+                                    "currency": {
+                                        "description": "Валюта в формате ISO 4217 (3 символа).",
+                                        "type": "string",
+                                        "example": "RUB"
+                                    },
+                                    "status": {
+                                        "description": "Статус платежа.",
+                                        "type": "string",
+                                        "example": "pending"
+                                    },
+                                    "description": {
+                                        "description": "Описание платежа",
+                                        "type": "string",
+                                        "example": "Оплата услуги",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Платеж успешно обновлён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "403": {
+                        "description": "Доступ к платежу запрещён"
+                    },
+                    "404": {
+                        "description": "Платеж не найден"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/public/products": {
             "get": {
                 "tags": [
@@ -1400,6 +1704,176 @@
                 },
                 "type": "object"
             },
+            "PaymentResource": {
+                "description": "Платёж пользователя",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "direction": {
+                        "description": "Направление платежа относительно пользователя: to — в сторону пользователя, from — от пользователя",
+                        "type": "string",
+                        "enum": [
+                            "to",
+                            "from"
+                        ],
+                        "example": "to"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1500.5
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "RUB"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Оплата услуги",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedPaymentResponse": {
+                "description": "Пагинированный список платежей",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PaymentResource"
+                        }
+                    },
+                    "pagination": {
+                        "properties": {
+                            "total": {
+                                "type": "integer",
+                                "example": 50
+                            },
+                            "count": {
+                                "type": "integer",
+                                "example": 15
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 15
+                            },
+                            "current_page": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "total_pages": {
+                                "type": "integer",
+                                "example": 4
+                            },
+                            "links": {
+                                "properties": {
+                                    "first": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "last": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "prev": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "next": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "PaymentSuccessResponse": {
+                "description": "Успешный ответ с платежом",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PaymentResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Платеж получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "PaymentsListSuccessResponse": {
+                "description": "Успешный ответ со списком платежей",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PaginatedPaymentResponse"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Список платежей получен успешно"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "PaymentCreatedResponse": {
+                "description": "Платеж успешно создан",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/PaymentResource"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Платеж успешно создан"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 201
+                    }
+                },
+                "type": "object"
+            },
             "ProductResource": {
                 "description": "Продукт в ответе API",
                 "required": [
@@ -2317,6 +2791,10 @@
         {
             "name": "Authentication",
             "description": "Аутентификация и управление пользователями"
+        },
+        {
+            "name": "Payments",
+            "description": "Payments"
         },
         {
             "name": "Users",
