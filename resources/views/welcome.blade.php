@@ -124,7 +124,9 @@
          min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b class="">vue3 + получение инфы о&nbsp;компании с&nbsp;яндекс карт</b>
-
+<br/>
+            создал парсинг сервис и мордашку, версия базовая, не спешащая
+            <br/>
             <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в&nbsp;vue3 приложение</a></p>
             <p>Получаем ссылку на&nbsp;компанию и&nbsp;показываем оценку и&nbsp;отзывы</p>
 
