@@ -47,6 +47,10 @@ Route::
     Route::get('payments/balance', [PaymentController::class, 'balance'])
         ->name('payments.balance');
 
+
+    // Платежи пользователя
+    Route::apiResource('payments', PaymentController::class);
+
 // Защищенные маршруты (требуется Bearer Token)
     Route::middleware(['auth:sanctum'])->group(function () {
         // Аутентификация
@@ -65,8 +69,6 @@ Route::
             ->name('products.force-destroy')
             ->withTrashed();
 
-        // Платежи пользователя
-        Route::apiResource('payments', PaymentController::class);
 
     });
 
