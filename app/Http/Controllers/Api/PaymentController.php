@@ -19,8 +19,8 @@ class PaymentController extends Controller
      */
     #[OA\Get(
         path: "/api/payments",
-        summary: "Получить список платежей",
         description: "Возвращает список платежей пользователя с пагинацией. По умолчанию используются платежи текущего пользователя.",
+        summary: "Получить список платежей",
         tags: ["Payments"],
         parameters: [
             new OA\Parameter(
@@ -28,7 +28,7 @@ class PaymentController extends Controller
                 description: "ID пользователя, для которого нужно получить платежи. По умолчанию — текущий пользователь.",
                 in: "query",
                 required: false,
-                schema: new OA\Schema(type: "integer", example: 10)
+                schema: new OA\Schema(type: "integer", example: 2)
             ),
             new OA\Parameter(
                 name: "direction",
@@ -64,10 +64,19 @@ class PaymentController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
-        $authUser = $request->user();
+
+        $validated = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+        ], [
+            'user_id.required' => 'ID пользователя обязателен.',
+            'user_id.integer' => 'ID пользователя должен быть числом.',
+            'user_id.exists' => 'Пользователь не найден в системе.',
+        ]);
+
+        $userId = (int) $validated['user_id'];
+
 
         $perPage = min((int)$request->get('per_page', 15), 100);
-        $userId = (int)$request->get('user_id', $authUser->id);
         $direction = $request->get('direction');
 
         $query = Payment::query()
@@ -91,8 +100,8 @@ class PaymentController extends Controller
      */
     #[OA\Get(
         path: "/api/payments/balance",
-        summary: "Получить текущий баланс пользователя",
         description: "Публичный эндпоинт. Возвращает текущий баланс пользователя по платежам со статусом completed. Пользователь указывается только по user_id.",
+        summary: "Получить текущий баланс пользователя",
         tags: ["Payments"],
         parameters: [
             new OA\Parameter(
@@ -156,58 +165,58 @@ class PaymentController extends Controller
      */
     #[OA\Post(
         path: "/api/payments",
-        summary: "Создать платёж",
         description: "Создаёт платёж в сторону пользователя или от пользователя. По умолчанию платёж относится к текущему пользователю.",
-        tags: ["Payments"],
+        summary: "Создать платёж",
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                type: "object",
                 required: ["direction", "amount"],
                 properties: [
                     new OA\Property(
                         property: "user_id",
-                        type: "integer",
-                        nullable: true,
                         description: "ID пользователя, к которому относится платёж. Если не указано — используется текущий пользователь.",
-                        example: 10
+                        type: "integer",
+                        example: 10,
+                        nullable: true
                     ),
                     new OA\Property(
                         property: "direction",
+                        description: "Направление платежа: to — в сторону пользователя, from — от пользователя.",
                         type: "string",
                         enum: ["to", "from"],
-                        description: "Направление платежа: to — в сторону пользователя, from — от пользователя.",
                         example: "to"
                     ),
                     new OA\Property(
                         property: "amount",
+                        description: "Сумма платежа",
                         type: "number",
                         format: "float",
-                        description: "Сумма платежа",
                         example: 1500.50
                     ),
                     new OA\Property(
                         property: "currency",
-                        type: "string",
                         description: "Валюта в формате ISO 4217 (3 символа). По умолчанию RUB.",
+                        type: "string",
                         example: "RUB"
                     ),
                     new OA\Property(
                         property: "status",
-                        type: "string",
                         description: "Статус платежа. По умолчанию pending.",
+                        type: "string",
                         example: "pending"
                     ),
                     new OA\Property(
                         property: "description",
-                        type: "string",
-                        nullable: true,
                         description: "Описание платежа",
-                        example: "Оплата услуги"
+                        type: "string",
+                        example: "Оплата услуги",
+                        nullable: true
                     ),
-                ]
+                ],
+                type: "object"
             )
         ),
+        tags: ["Payments"],
         responses: [
             new OA\Response(
                 response: 201,
@@ -247,6 +256,8 @@ class PaymentController extends Controller
         $userId = $validated['user_id'] ?? $authUser->id;
 
         return DB::transaction(function () use ($validated, $userId) {
+
+
             // Если деньги списываются от пользователя — проверяем баланс
             if ($validated['direction'] === 'from') {
                 $balance = Payment::query()
@@ -278,6 +289,7 @@ class PaymentController extends Controller
                 $payment,
                 'Платеж успешно создан'
             );
+
         });
     }
 
@@ -328,10 +340,51 @@ class PaymentController extends Controller
      */
     #[OA\Patch(
         path: "/api/payments/{id}",
-        summary: "Обновить платёж",
         description: "Частичное обновление платежа.",
-        tags: ["Payments"],
+        summary: "Обновить платёж",
         security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: false,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: "direction",
+                        description: "Направление платежа: to — в сторону пользователя, from — от пользователя.",
+                        type: "string",
+                        enum: ["to", "from"],
+                        example: "to"
+                    ),
+                    new OA\Property(
+                        property: "amount",
+                        description: "Сумма платежа",
+                        type: "number",
+                        format: "float",
+                        example: 1500.50
+                    ),
+                    new OA\Property(
+                        property: "currency",
+                        description: "Валюта в формате ISO 4217 (3 символа).",
+                        type: "string",
+                        example: "RUB"
+                    ),
+                    new OA\Property(
+                        property: "status",
+                        description: "Статус платежа.",
+                        type: "string",
+                        example: "pending"
+                    ),
+                    new OA\Property(
+                        property: "description",
+                        description: "Описание платежа",
+                        type: "string",
+                        example: "Оплата услуги",
+                        nullable: true
+                    ),
+                ],
+                type: "object"
+            )
+        ),
+        tags: ["Payments"],
         parameters: [
             new OA\Parameter(
                 name: "id",
@@ -341,47 +394,6 @@ class PaymentController extends Controller
                 schema: new OA\Schema(type: "integer")
             )
         ],
-        requestBody: new OA\RequestBody(
-            required: false,
-            content: new OA\JsonContent(
-                type: "object",
-                properties: [
-                    new OA\Property(
-                        property: "direction",
-                        type: "string",
-                        enum: ["to", "from"],
-                        example: "to",
-                        description: "Направление платежа: to — в сторону пользователя, from — от пользователя."
-                    ),
-                    new OA\Property(
-                        property: "amount",
-                        type: "number",
-                        example: 1500.50,
-                        format: "float",
-                        description: "Сумма платежа"
-                    ),
-                    new OA\Property(
-                        property: "currency",
-                        type: "string",
-                        example: "RUB",
-                        description: "Валюта в формате ISO 4217 (3 символа)."
-                    ),
-                    new OA\Property(
-                        property: "status",
-                        type: "string",
-                        example: "pending",
-                        description: "Статус платежа."
-                    ),
-                    new OA\Property(
-                        property: "description",
-                        type: "string",
-                        example: "Оплата услуги",
-                        nullable: true,
-                        description: "Описание платежа"
-                    ),
-                ]
-            )
-        ),
         responses: [
             new OA\Response(
                 response: 200,
