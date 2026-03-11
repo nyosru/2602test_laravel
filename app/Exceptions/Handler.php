@@ -17,10 +17,10 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     /**
-     * Список исключений, которые не должны логироваться
+     * Список исключений, которые не должны логироваться.
      */
     protected $dontReport = [
-        //
+
     ];
 
     /**
@@ -38,12 +38,12 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+
         });
     }
 
     /**
-     * Преобразуем исключения в JSON ответы
+     * Преобразуем исключения в JSON ответы.
      */
     public function render($request, Throwable $exception)
     {
@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Обработка исключений для API
+     * Обработка исключений для API.
      */
     protected function handleApiException(Request $request, Throwable $exception): JsonResponse
     {
@@ -90,7 +90,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Ошибка валидации
+     * Ошибка валидации.
      */
     protected function validationError(ValidationException $exception): JsonResponse
     {
@@ -103,7 +103,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Ресурс не найден
+     * Ресурс не найден.
      */
     protected function notFoundError(Exception $exception): JsonResponse
     {
@@ -113,7 +113,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ModelNotFoundException) {
             $model = $exception->getModel();
             $modelName = class_basename($model);
-            $message = "$modelName не найден";
+            $message = "{$modelName} не найден";
         }
 
         return response()->json([
@@ -125,7 +125,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Метод не разрешен
+     * Метод не разрешен.
      */
     protected function methodNotAllowedError(MethodNotAllowedHttpException $exception): JsonResponse
     {
@@ -133,14 +133,14 @@ class Handler extends ExceptionHandler
             'success' => false,
             'message' => 'Метод не разрешен',
             'errors' => [
-                'method' => [$exception->getMessage()]
+                'method' => [$exception->getMessage()],
             ],
             'code' => 405,
         ], 405);
     }
 
     /**
-     * HTTP ошибки
+     * HTTP ошибки.
      */
     protected function httpError(HttpException $exception): JsonResponse
     {
@@ -156,7 +156,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Не авторизован
+     * Не авторизован.
      */
     protected function unauthenticatedError(AuthenticationException $exception): JsonResponse
     {
@@ -169,7 +169,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Серверная ошибка
+     * Серверная ошибка.
      */
     protected function serverError(Throwable $exception): JsonResponse
     {

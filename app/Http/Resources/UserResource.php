@@ -28,19 +28,19 @@ class UserResource extends JsonResource
             'phone' => $this->when($this->phone, $this->phone),
             'company' => $this->when($this->company, $this->company),
 
-//            'links' => [
-//                'self' => route('api.user.show', $this->id),
-//                'products' => route('api.user.products', $this->id),
-//                'tokens' => route('api.user.tokens', $this->id),
-//                'update' => route('api.user.update', $this->id),
-//                'delete' => route('api.user.destroy', $this->id),
-//            ],
+            //            'links' => [
+            //                'self' => route('api.user.show', $this->id),
+            //                'products' => route('api.user.products', $this->id),
+            //                'tokens' => route('api.user.tokens', $this->id),
+            //                'update' => route('api.user.update', $this->id),
+            //                'delete' => route('api.user.destroy', $this->id),
+            //            ],
 
             // Мета-данные
             'meta' => [
-                'products_count' => $this->whenLoaded('products', fn() => $this->products->count()),
-                'tokens_count' => $this->whenLoaded('tokens', fn() => $this->tokens->count()),
-                'last_login' => $this->when($this->last_login, fn() => $this->last_login?->toDateTimeString()),
+                'products_count' => $this->whenLoaded('products', fn () => $this->products->count()),
+                'tokens_count' => $this->whenLoaded('tokens', fn () => $this->tokens->count()),
+                'last_login' => $this->when($this->last_login, fn () => $this->last_login?->toDateTimeString()),
             ],
         ];
     }

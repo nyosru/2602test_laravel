@@ -7,8 +7,8 @@ use App\DTOs\Product\ProductDTO;
 use App\DTOs\Product\UpdateProductDTO;
 use App\Repositories\ProductRepository;
 use App\Repositories\ProductRepositoryInterface;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProductService
 {
@@ -20,7 +20,7 @@ class ProductService
     }
 
     /**
-     * Получить все продукты
+     * Получить все продукты.
      */
     public function getAllProducts(): Collection
     {
@@ -34,23 +34,23 @@ class ProductService
 
     public function getProductById(int $id): ?object
     {
-//        return $this->productRepository->find($id);
+        //        return $this->productRepository->find($id);
         $product = $this->productRepository->find($id);
         return $product ? ProductDTO::fromModel($product) : null;
     }
 
-//    public function createProduct(array $data): object
+    //    public function createProduct(array $data): object
     public function createProduct(CreateProductDTO $dto): ProductDTO
     {
-//        return $this->productRepository->create($data);
+        //        return $this->productRepository->create($data);
         $product = $this->productRepository->create($dto->toArray());
         return ProductDTO::fromModel($product);
     }
 
-//    public function updateProduct(int $id, array $data): bool
-//    {
-//        return $this->productRepository->update($id, $data);
-//    }
+    //    public function updateProduct(int $id, array $data): bool
+    //    {
+    //        return $this->productRepository->update($id, $data);
+    //    }
     public function updateProduct(UpdateProductDTO $dto): ?ProductDTO
     {
         $product = $this->productRepository->update($dto->id, $dto->toArray());

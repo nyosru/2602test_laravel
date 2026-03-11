@@ -20,7 +20,6 @@ class PaymentSeeder extends Seeder
                 'user_id' => $user->id,
             ]);
 
-
         }
 
     }

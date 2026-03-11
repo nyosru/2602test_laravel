@@ -6,20 +6,20 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
 
 Route::get('sudoku', function () {
     return Inertia::render('Sudoku');
 })->name('sudoku');
 
-
-
 Route::get('/login', function () {
     return inertia('Auth/Login');
 })->name('login');
 Route::post('login', [AuthController::class, 'login']);
 
+Route::get('explain_sql', function () {
+    return view('explain_sql');
+})->name('test.explain_sql');
 
 Route::get('', function () {
     return view('welcome');
@@ -36,12 +36,9 @@ Route::prefix('vue3')->group(function () {
     });
 });
 
-
-
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 
 Route::middleware('auth')->group(function () {
     Route::post('/parse-yandex', function (Request $request) {
@@ -59,7 +56,7 @@ Route::middleware('auth')->group(function () {
             'path' => parse_url($url, PHP_URL_PATH),
             'openGraph' => ['og:title' => 'OG Title', 'og:image' => 'image.jpg'],
             'links' => ['https://yandex.ru/link1', 'https://yandex.ru/link2'],
-            'images' => ['https://via.placeholder.com/150']
+            'images' => ['https://via.placeholder.com/150'],
         ];
 
         return inertia('YandexParser', ['parsedData' => $data, 'parsedUrl' => $url]);
@@ -67,11 +64,10 @@ Route::middleware('auth')->group(function () {
     })->name('parse-yandex');
 });
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

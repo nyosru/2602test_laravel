@@ -2,15 +2,14 @@
 
 namespace App\Services;
 
-use Spatie\Browsershot\Browsershot;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Spatie\Browsershot\Browsershot;
 
 class BrowserRenderService
 {
-
     /**
-     * Получает HTML страницы после полной отрисовки JS
+     * Получает HTML страницы после полной отрисовки JS.
      */
     public function getRenderedHtml(
         string $url,
@@ -35,8 +34,8 @@ class BrowserRenderService
             if ($scrollCount > 0) {
                 $shot->evaluateScript(
                     collect(range(1, $scrollCount))
-                        ->map(fn() => 'window.scrollTo(0, document.body.scrollHeight);')
-                        ->join('; sleep(' . $scrollPauseSec . '); ')
+                        ->map(fn () => 'window.scrollTo(0, document.body.scrollHeight);')
+                        ->join('; sleep('.$scrollPauseSec.'); ')
                 );
             }
 

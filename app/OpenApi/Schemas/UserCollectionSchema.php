@@ -87,4 +87,6 @@ use OpenApi\Attributes as OA;
         ),
     ]
 )]
-class UserCollectionSchema {}
+class UserCollectionSchema
+{
+}

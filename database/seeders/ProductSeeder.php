@@ -31,6 +31,6 @@ class ProductSeeder extends Seeder
             'price'       => 699.99,
         ]);
 
-        $this->command->info('Добавлено ' . Product::count() . ' товаров в базу данных.');
+        $this->command->info('Добавлено '.Product::count().' товаров в базу данных.');
     }
 }

@@ -2,14 +2,12 @@
 
 namespace App\Services;
 
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Panther\Client as PantherClient;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\DomCrawler\Crawler;
 
 class YandexHtmlParserService
 {
-
     public function parsingComponyFromMaps(string $html, array $options = []) // : string
     {
 
@@ -20,12 +18,10 @@ class YandexHtmlParserService
             // Парсим полученный HTML
             $crawler = new Crawler($html);
 
-
-//            $name = $crawler->filter('meta[itemprop="name"]')->text();
+            //            $name = $crawler->filter('meta[itemprop="name"]')->text();
             $name = $crawler->filter('.orgpage-header-view__header')->text();
 
             $reviews = $this->extractReviews($crawler);
-
 
             // Извлекаем рейтинг и количество отзывов
             $ratingNode = $crawler->filter('.business-rating-badge-view__rating-text');
@@ -34,24 +30,24 @@ class YandexHtmlParserService
             $countNode = $crawler->filter('.business-rating-amount-view__text, .business-rating-amount-view__count');
             $reviewCount = $countNode->count() ? trim($countNode->text()) : null;
 
-            if( 1 == 2 ){
+            if (1 == 2) {
 
-            try {
-                $reviews0 = $crawler->filter('.business-reviews-card-view__review')
-                    ->each(function (Crawler $node) {
-                        $html = $node->html();
-                        $data = $this->parseYandexReviewBlock($node);
-//                        return $this->parseYandexReviewBlock($node);
-                        return compact('data', 'html');
-                    });
-            } catch (Exception $e) {
-//                Log::error($e->getMessage());
-                $error[] = $e->getFile() . ' #' . $e->getLine() . ' ' . $e->getMessage();
-            }
+                try {
+                    $reviews0 = $crawler->filter('.business-reviews-card-view__review')
+                        ->each(function (Crawler $node) {
+                            $html = $node->html();
+                            $data = $this->parseYandexReviewBlock($node);
+                            //                        return $this->parseYandexReviewBlock($node);
+                            return compact('data', 'html');
+                        });
+                } catch (Exception $e) {
+                    //                Log::error($e->getMessage());
+                    $error[] = $e->getFile().' #'.$e->getLine().' '.$e->getMessage();
+                }
             }
 
             // Извлекаем отзывы
-            if(1==2) {
+            if (1 == 2) {
                 $reviews = $crawler->filter('.business-reviews-card-view__review')->each(function (Crawler $node) {
 
                     $data = $this->parseYandexReviewBlock($node);
@@ -73,15 +69,14 @@ class YandexHtmlParserService
                         : null;
 
                     return compact('author', 'rating', 'date', 'text', 'data');
-//                return ['author' => $author, 'rating' => $rating, 'date' => $date, 'text' => $text ];
+                    //                return ['author' => $author, 'rating' => $rating, 'date' => $date, 'text' => $text ];
                 });
-
 
                 // Фильтруем пустые отзывы
                 // $reviews = array_filter($reviews, fn($r) => !empty($r['text']));
             }
 
-            if( 1 == 2 ) {
+            if (1 == 2) {
                 $spoilerTexts = $crawler->filter('.spoiler-view__text-container')->each(function (Crawler $node) {
                     // Чистый текст без лишних пробелов
                     return preg_replace('/\s+/', ' ', trim($node->text()));
@@ -94,9 +89,9 @@ class YandexHtmlParserService
             if ($ratingBlock->count() > 0) {
                 $rating = trim(preg_replace('/\s+/', ' ', $ratingBlock->text()));
                 $rating = preg_replace('/\s*из\s*\d+.*$/i', '', $rating);
-//                $rating = str_replace(['Rating ','Рейтинг '], ['',''], $rating);
+                //                $rating = str_replace(['Rating ','Рейтинг '], ['',''], $rating);
                 if (preg_match('/\b(\d+)\,?(\d*)\b/', $rating, $matches)) {
-                    $rating = $matches[1] . '.' . $matches[2]; // например, "4.5"
+                    $rating = $matches[1].'.'.$matches[2]; // например, "4.5"
                 }
             }
 
@@ -112,32 +107,31 @@ class YandexHtmlParserService
                 'rating' => $rating,
                 'businesAspects' => $businesAspects,
 
-
                 'reviews' => $reviews,
-//                'review_count' => count($spoilerTexts),
+                //                'review_count' => count($spoilerTexts),
                 'review_count' => count($reviews),
-//                'reviews' => $spoilerTexts ?? [],
-//                'reviews11' => $reviews ?? [],
-//                'reviews00' => $reviews0 ?? [],
-//                'reviews' => array_values($reviews), // переиндексируем массив
-//                'loaded_count' => count($reviews),
+                //                'reviews' => $spoilerTexts ?? [],
+                //                'reviews11' => $reviews ?? [],
+                //                'reviews00' => $reviews0 ?? [],
+                //                'reviews' => array_values($reviews), // переиндексируем массив
+                //                'loaded_count' => count($reviews),
 
                 'timestamp' => now()->toDateTimeString(),
                 'error' => $error,
                 'html' => $crawler->html(),
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
-            Log::error('Panther parsing error: ' . $e->getMessage(), [
-//                'url' => $url,
+            Log::error('Panther parsing error: '.$e->getMessage(), [
+                //                'url' => $url,
             ]);
 
             return response()->json([
-//            return [
+                //            return [
                 'success' => false,
-                'error' => $e->getFILe().' '.$e->getLine().''. $e->getMessage(),
-//            ];
+                'error' => $e->getFILe().' '.$e->getLine().''.$e->getMessage(),
+                //            ];
             ]);
 
         }
@@ -178,7 +172,7 @@ class YandexHtmlParserService
         // 7. Картинки из карусели (самые свежие ссылки, обычно /S — маленькие, можно заменить на /XL или /XXL)
         $data['photos'] = $reviewNode
             ->filter('.business-review-media__item-img')
-            ->each(fn(Crawler $img) => $img->attr('src', null));
+            ->each(fn (Crawler $img) => $img->attr('src', null));
 
         // 8. Лайки / полезно
         $data['likes'] = (int)$reviewNode->filter('.business-reactions-view__container[aria-label="Лайк"] .business-reactions-view__counter')->text('0');
@@ -192,11 +186,11 @@ class YandexHtmlParserService
         // Опционально: ссылка на профиль автора
         $data['author_profile_url'] = $reviewNode->filter('.business-review-view__author-name a')->attr('href', null);
 
-//        return array_filter($data, fn($v) => $v !== null && $v !== ''); // убираем пустые
+        //        return array_filter($data, fn($v) => $v !== null && $v !== ''); // убираем пустые
         return $data; // убираем пустые
     }
 
-    public function extractReviews( Crawler $crawler ): array
+    public function extractReviews(Crawler $crawler): array
     {
 
         $reviewNodes = $crawler->filterXPath('//div[@itemprop="review"]');
@@ -211,7 +205,7 @@ class YandexHtmlParserService
             $reviews[] = [
                 'author' => $node->filter('[itemprop="author"] [itemprop="name"]')->text(null, true) ?? null,
                 'rating' => $node->filter('meta[itemprop="ratingValue"]')->attr('content', null),
-                'date' => date( 'd.m.Y H:i', strtotime($date)),
+                'date' => date('d.m.Y H:i', strtotime($date)),
                 'text' => $node->filter('[itemprop="reviewBody"]')->text(null, true) ?? null,
                 // можно добавить фото, лайки и т.д. как в твоей функции
             ];

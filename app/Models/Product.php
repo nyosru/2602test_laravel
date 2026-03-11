@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use OpenApi\Attributes as OA;
-
 class Product extends Model
 {
-
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = ['name', 'description', 'price', 'stock', 'is_active'];
 
@@ -22,9 +20,9 @@ class Product extends Model
         'is_active' => 'boolean',
     ];
 
-    public function dealItems() {
+    public function dealItems()
+    {
         return $this->morphMany(DealItem::class, 'item');
     }
-
 
 }

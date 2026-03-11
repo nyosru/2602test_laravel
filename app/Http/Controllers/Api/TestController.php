@@ -5,9 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OA;
 
 class TestController
@@ -15,7 +12,7 @@ class TestController
     use \App\Traits\ApiResponse;
 
     /**
-     * Получить случайного пользователя (без создания токена)
+     * Получить случайного пользователя (без создания токена).
      */
     public function getRandomUser(): JsonResponse
     {
@@ -31,26 +28,24 @@ class TestController
         );
     }
 
-
     /**
-     * Получить случайный токен
+     * Получить случайный токен.
      */
-
     #[OA\Get(
-        path: "/api/users/random/token",
-        summary: "Получить случайный токен (для теста и быстрого получения токена)",
-        description: "Возвращает случайный рабочий токен авторизации",
-        tags: ["Users"],
+        path: '/api/users/random/token',
+        summary: 'Получить случайный токен (для теста и быстрого получения токена)',
+        description: 'Возвращает случайный рабочий токен авторизации',
+        tags: ['Users'],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Успешный ответ",
-                content: new OA\JsonContent(ref: "#/components/schemas/UserResource")
+                description: 'Успешный ответ',
+                content: new OA\JsonContent(ref: '#/components/schemas/UserResource')
             ),
             new OA\Response(
                 response: 404,
-                description: "Пользователи не найдены",
-                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+                description: 'Пользователи не найдены',
+                content: new OA\JsonContent(ref: '#/components/schemas/NotFoundError')
             ),
         ]
     )]
@@ -61,7 +56,7 @@ class TestController
             return $this->notFoundResponse('Пользователи не найдены');
         }
         $token = $user->createToken('random-user')->plainTextToken;
-//        return response()->json( ['token' => $token ]);
+        //        return response()->json( ['token' => $token ]);
 
         return $this->successResponse(
             ['token' => $token],

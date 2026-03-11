@@ -20,18 +20,14 @@ trait ApiResponse
 
         // Удаляем null значения
         $response = array_filter($response, function ($value) {
-            return !is_null($value);
+            return null !== $value;
         });
 
         return response()->json($response, $code);
     }
 
-
-
-
-
     /**
-     * Ответ с ошибкой
+     * Ответ с ошибкой.
      */
     protected function errorResponse(string $message = null, array $errors = [], int $code = 400): JsonResponse
     {
@@ -44,7 +40,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ с валидационной ошибкой
+     * Ответ с валидационной ошибкой.
      */
     protected function validationErrorResponse(array $errors, string $message = null): JsonResponse
     {
@@ -56,7 +52,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ "Не найдено"
+     * Ответ "Не найдено".
      */
     protected function notFoundResponse(string $message = null): JsonResponse
     {
@@ -67,7 +63,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ "Запрещено"
+     * Ответ "Запрещено".
      */
     protected function forbiddenResponse(string $message = null): JsonResponse
     {
@@ -78,7 +74,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ "Не авторизован"
+     * Ответ "Не авторизован".
      */
     protected function unauthorizedResponse(string $message = null): JsonResponse
     {
@@ -89,7 +85,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ с созданием ресурса
+     * Ответ с созданием ресурса.
      */
     protected function createdResponse($data = null, string $message = null): JsonResponse
     {
@@ -101,7 +97,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ с обновлением ресурса
+     * Ответ с обновлением ресурса.
      */
     protected function updatedResponse($data = null, string $message = null): JsonResponse
     {
@@ -113,7 +109,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ с удалением ресурса
+     * Ответ с удалением ресурса.
      */
     protected function deletedResponse(string $message = null): JsonResponse
     {
@@ -124,7 +120,7 @@ trait ApiResponse
     }
 
     /**
-     * Ответ с пагинацией
+     * Ответ с пагинацией.
      */
     protected function paginatedResponse($paginator, string $message = null): JsonResponse
     {

@@ -2,23 +2,25 @@
 
 namespace App\Services;
 
-use Symfony\Component\Panther\Client as PantherClient;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Panther\Client as PantherClient;
 
 class VirtualBrowserService
 {
     /**
-     * Получает полный HTML страницы через headless Chrome
+     * Получает полный HTML страницы через headless Chrome.
      *
-     * @param string $url Адрес страницы
-     * @param array $options Дополнительные параметры
-     *   - wait_selector: CSS-селектор, которого ждём (по умолчанию body)
-     *   - wait_timeout: таймаут ожидания в секундах
-     *   - scroll_count: сколько раз прокрутить вниз
-     *   - scroll_wait: пауза после каждого скролла
-     * @return string HTML-код страницы
+     * @param string $url     Адрес страницы
+     * @param array  $options Дополнительные параметры
+     *                        - wait_selector: CSS-селектор, которого ждём (по умолчанию body)
+     *                        - wait_timeout: таймаут ожидания в секундах
+     *                        - scroll_count: сколько раз прокрутить вниз
+     *                        - scroll_wait: пауза после каждого скролла
+     *
      * @throws Exception
+     *
+     * @return string HTML-код страницы
      */
     public function getPageHtml(string $url, array $options = []): string
     {
@@ -65,12 +67,12 @@ class VirtualBrowserService
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            throw new Exception("Не удалось получить HTML страницы: " . $e->getMessage());
+            throw new Exception('Не удалось получить HTML страницы: '.$e->getMessage());
         }
     }
 
     /**
-     * Создаёт Panther-клиент с настройками, оптимизированными для Docker
+     * Создаёт Panther-клиент с настройками, оптимизированными для Docker.
      */
     protected function createPantherClient(): PantherClient
     {
@@ -88,7 +90,7 @@ class VirtualBrowserService
                 '--disable-extensions',
                 '--disable-setuid-sandbox',
                 '--remote-debugging-port=9222',
-                '--user-data-dir=/tmp/chrome-' . uniqid(), // уникальный каждый раз
+                '--user-data-dir=/tmp/chrome-'.uniqid(), // уникальный каждый раз
                 '--disable-crash-reporter',
                 '--disable-logging',
                 '--log-level=3',
@@ -104,7 +106,7 @@ class VirtualBrowserService
                     'binary' => '/usr/bin/chromium-browser', // правильный путь в Debian/Ubuntu
                 ],
                 'chromedriver_arguments' => [
-                    "--port=$port",
+                    "--port={$port}",
                     '--verbose',
                     '--log-path=/tmp/chromedriver.log',
                     '--whitelisted-ips=',

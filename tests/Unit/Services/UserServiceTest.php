@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Models\User;
 use App\Services\UserService;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -17,11 +18,11 @@ class UserServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp(); // Важно: вызываем parent::setUp()
-        $this->userService = new UserService();
+        $this->userService = new UserService;
     }
 
     /** @test */
-    public function it_can_register_a_new_user()
+    public function itCanRegisterANewUser()
     {
         // Arrange
         $userData = [
@@ -44,7 +45,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_valid_token_on_registration()
+    public function itReturnsValidTokenOnRegistration()
     {
         // Arrange
         $userData = [
@@ -62,7 +63,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_login_with_valid_credentials()
+    public function itCanLoginWithValidCredentials()
     {
         // Arrange
         $user = User::factory()->create([
@@ -86,7 +87,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_null_for_invalid_login_credentials()
+    public function itReturnsNullForInvalidLoginCredentials()
     {
         // Arrange
         User::factory()->create([
@@ -107,7 +108,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_null_for_nonexistent_email()
+    public function itReturnsNullForNonexistentEmail()
     {
         // Arrange
         $credentials = [
@@ -123,7 +124,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_api_token_with_admin_permissions()
+    public function itCreatesApiTokenWithAdminPermissions()
     {
         // Arrange
         $adminUser = User::factory()->create(['is_admin' => true]);
@@ -143,7 +144,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_api_token_with_user_permissions()
+    public function itCreatesApiTokenWithUserPermissions()
     {
         // Arrange
         $regularUser = User::factory()->create(['is_admin' => false]);
@@ -161,7 +162,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_logout_user_by_deleting_current_token()
+    public function itCanLogoutUserByDeletingCurrentToken()
     {
         // Arrange
         $user = User::factory()->create();
@@ -181,7 +182,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_throw_error_when_logging_out_without_token()
+    public function itDoesNotThrowErrorWhenLoggingOutWithoutToken()
     {
         // Arrange
         $user = User::factory()->create();
@@ -190,13 +191,13 @@ class UserServiceTest extends TestCase
         try {
             $this->userService->logout($user);
             $this->assertTrue(true); // Если дошло сюда, значит исключения не было
-        } catch (\Exception $e) {
-            $this->fail('Метод logout выбросил исключение: ' . $e->getMessage());
+        } catch (Exception $e) {
+            $this->fail('Метод logout выбросил исключение: '.$e->getMessage());
         }
     }
 
     /** @test */
-    public function it_can_revoke_all_tokens_for_user()
+    public function itCanRevokeAllTokensForUser()
     {
         // Arrange
         $user = User::factory()->create();
@@ -216,7 +217,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_revoke_other_tokens_except_current()
+    public function itCanRevokeOtherTokensExceptCurrent()
     {
         // Arrange
         $user = User::factory()->create();
@@ -251,7 +252,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_current_user()
+    public function itReturnsCurrentUser()
     {
         // Arrange
         $user = User::factory()->create();
@@ -266,7 +267,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_hashes_password_during_registration()
+    public function itHashesPasswordDuringRegistration()
     {
         // Arrange
         $plainPassword = 'password123';
@@ -285,7 +286,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_register_multiple_users_with_unique_emails()
+    public function itCanRegisterMultipleUsersWithUniqueEmails()
     {
         // Arrange
         $userData1 = [
@@ -313,7 +314,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_different_tokens_for_different_users()
+    public function itCreatesDifferentTokensForDifferentUsers()
     {
         // Arrange
         $user1 = User::factory()->create();
@@ -335,7 +336,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function login_fails_with_empty_credentials()
+    public function loginFailsWithEmptyCredentials()
     {
         // Arrange
         $emptyCredentials = [];
@@ -348,7 +349,7 @@ class UserServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_token_with_custom_name()
+    public function itCanCreateTokenWithCustomName()
     {
         // Arrange
         $user = User::factory()->create();

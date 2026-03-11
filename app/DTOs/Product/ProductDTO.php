@@ -14,10 +14,11 @@ class ProductDTO
         public readonly float $price,
         public readonly ?string $createdAt,
         public readonly ?string $updatedAt
-    ) {}
+    ) {
+    }
 
     /**
-     * Создание DTO из массива данных
+     * Создание DTO из массива данных.
      */
     public static function fromArray(array $data): self
     {
@@ -32,7 +33,7 @@ class ProductDTO
     }
 
     /**
-     * Создание DTO из модели Eloquent
+     * Создание DTO из модели Eloquent.
      */
     public static function fromModel(Product $product): self
     {
@@ -47,7 +48,7 @@ class ProductDTO
     }
 
     /**
-     * Создание DTO из Request
+     * Создание DTO из Request.
      */
     public static function fromRequest(Request $request): self
     {
@@ -62,7 +63,7 @@ class ProductDTO
     }
 
     /**
-     * Преобразование DTO в массив для создания/обновления
+     * Преобразование DTO в массив для создания/обновления.
      */
     public function toArray(): array
     {

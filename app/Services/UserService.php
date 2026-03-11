@@ -4,14 +4,12 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\NewAccessToken;
 
 class UserService
 {
     /**
-     * Регистрация нового пользователя
+     * Регистрация нового пользователя.
      *
-     * @param array $data
      * @return array{user: User, token: string}
      */
     public function register(array $data): array
@@ -32,10 +30,9 @@ class UserService
     }
 
     /**
-     * Аутентификация пользователя и выдача токена
+     * Аутентификация пользователя и выдача токена.
      *
-     * @param array $credentials
-     * @return array{user: User, token: string}|null
+     * @return null|array{user: User, token: string}
      */
     public function login(array $credentials): ?array
     {
@@ -54,11 +51,7 @@ class UserService
     }
 
     /**
-     * Создание API-токена с правильными правами в зависимости от роли
-     *
-     * @param User $user
-     * @param string $tokenName
-     * @return string
+     * Создание API-токена с правильными правами в зависимости от роли.
      */
     public function createApiToken(User $user, string $tokenName = 'api-token'): string
     {
@@ -75,10 +68,7 @@ class UserService
     }
 
     /**
-     * Выход — удаление текущего токена
-     *
-     * @param User $user
-     * @return void
+     * Выход — удаление текущего токена.
      */
     public function logout(User $user): void
     {
@@ -86,10 +76,7 @@ class UserService
     }
 
     /**
-     * Отзыв всех токенов пользователя кроме текущего
-     *
-     * @param User $user
-     * @return void
+     * Отзыв всех токенов пользователя кроме текущего.
      */
     public function revokeOtherTokens(User $user): void
     {
@@ -97,10 +84,7 @@ class UserService
     }
 
     /**
-     * Отзыв всех токенов пользователя
-     *
-     * @param User $user
-     * @return void
+     * Отзыв всех токенов пользователя.
      */
     public function revokeAllTokens(User $user): void
     {
@@ -108,10 +92,7 @@ class UserService
     }
 
     /**
-     * Получение текущего пользователя (для /api/user)
-     *
-     * @param User $user
-     * @return User
+     * Получение текущего пользователя (для /api/user).
      */
     public function getCurrentUser(User $user): User
     {

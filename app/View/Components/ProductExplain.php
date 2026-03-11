@@ -43,4 +43,3 @@ class ProductExplain extends Component
         return view('components.product-explain');
     }
 }
-

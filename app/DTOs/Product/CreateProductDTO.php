@@ -8,7 +8,8 @@ class CreateProductDTO
         public readonly string $name,
         public readonly ?string $description,
         public readonly float $price
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {
@@ -36,7 +37,8 @@ class UpdateProductDTO
         public readonly ?string $name,
         public readonly ?string $description,
         public readonly ?float $price
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data, int $id): self
     {
@@ -54,6 +56,6 @@ class UpdateProductDTO
             'name' => $this->name,
             'description' => $this->description,
             'price' => $this->price,
-        ], fn($value) => !is_null($value));
+        ], fn ($value) => null !== $value);
     }
 }

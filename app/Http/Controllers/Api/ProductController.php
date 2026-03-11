@@ -13,78 +13,76 @@ use OpenApi\Attributes as OA;
 
 class ProductController extends Controller
 {
-
     use \App\Traits\ApiResponse;
     protected $repository;
-
 
     public function __construct(ProductRepositoryInterface $repository)
     {
         $this->repository = $repository;
 
         $this->middleware('auth:sanctum')->except([
-            'indexPublic'
+            'indexPublic',
         ]);
     }
 
     /**
-     * Получить список продуктов (публичный доступ)
+     * Получить список продуктов (публичный доступ).
      */
     #[OA\Get(
-        path: "/api/public/products",
-        summary: "Получить список продуктов (публичный доступ)",
-        description: "Возвращает список продуктов с пагинацией. Без авторизации",
-        tags: ["Products"],
+        path: '/api/public/products',
+        summary: 'Получить список продуктов (публичный доступ)',
+        description: 'Возвращает список продуктов с пагинацией. Без авторизации',
+        tags: ['Products'],
         parameters: [
             new OA\Parameter(
-                name: "page",
-                description: "Номер страницы",
-                in: "query",
+                name: 'page',
+                description: 'Номер страницы',
+                in: 'query',
                 required: false,
-                schema: new OA\Schema(type: "integer", default: 1)
+                schema: new OA\Schema(type: 'integer', default: 1)
             ),
             new OA\Parameter(
-                name: "per_page",
-                description: "Количество элементов на странице (макс. 100)",
-                in: "query",
+                name: 'per_page',
+                description: 'Количество элементов на странице (макс. 100)',
+                in: 'query',
                 required: false,
-                schema: new OA\Schema(type: "integer", default: 15, maximum: 100)
+                schema: new OA\Schema(type: 'integer', default: 15, maximum: 100)
             ),
             new OA\Parameter(
-                name: "search",
-                description: "Поиск по названию или описанию",
-                in: "query",
+                name: 'search',
+                description: 'Поиск по названию или описанию',
+                in: 'query',
                 required: false,
-                schema: new OA\Schema(type: "string")
+                schema: new OA\Schema(type: 'string')
             ),
             new OA\Parameter(
-                name: "sort_by",
-                description: "Поле для сортировки",
-                in: "query",
+                name: 'sort_by',
+                description: 'Поле для сортировки',
+                in: 'query',
                 required: false,
                 schema: new OA\Schema(
-                    type: "string",
-                    enum: ["id", "name", "price", "created_at"],
-                    default: "id"
+                    type: 'string',
+                    enum: ['id', 'name', 'price', 'created_at'],
+                    default: 'id'
                 )
             ),
             new OA\Parameter(
-                name: "sort_order",
-                description: "Порядок сортировки",
-                in: "query",
+                name: 'sort_order',
+                description: 'Порядок сортировки',
+                in: 'query',
                 required: false,
                 schema: new OA\Schema(
-                    type: "string",
-                    enum: ["asc", "desc"],
-                    default: "desc"
+                    type: 'string',
+                    enum: ['asc', 'desc'],
+                    default: 'desc'
                 )
             ),
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Список продуктов - успешный ответ",
-                content: new OA\JsonContent(ref: "#/components/schemas/ProductsListSuccessResponse")
+                description: 'Список продуктов - успешный ответ',
+                content: new OA\JsonContent(ref: '#/components/schemas/ProductsListSuccessResponse')
             )]
     )]
     public function indexPublic(Request $request)
@@ -117,90 +115,87 @@ class ProductController extends Controller
         );
     }
 
-
-
-
     /**
-     * Получить список продуктов с пагинацией
+     * Получить список продуктов с пагинацией.
      */
     #[OA\Get(
-        path: "/api/products",
-        summary: "Получить список продуктов",
-        description: "Возвращает список продуктов с пагинацией",
-        tags: ["Products"],
+        path: '/api/products',
+        summary: 'Получить список продуктов',
+        description: 'Возвращает список продуктов с пагинацией',
+        tags: ['Products'],
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: "page",
-                description: "Номер страницы",
-                in: "query",
+                name: 'page',
+                description: 'Номер страницы',
+                in: 'query',
                 required: false,
-                schema: new OA\Schema(type: "integer", default: 1)
+                schema: new OA\Schema(type: 'integer', default: 1)
             ),
             new OA\Parameter(
-                name: "per_page",
-                description: "Количество элементов на странице (макс. 100)",
-                in: "query",
+                name: 'per_page',
+                description: 'Количество элементов на странице (макс. 100)',
+                in: 'query',
                 required: false,
-                schema: new OA\Schema(type: "integer", default: 15, maximum: 100)
+                schema: new OA\Schema(type: 'integer', default: 15, maximum: 100)
             ),
             new OA\Parameter(
-                name: "search",
-                description: "Поиск по названию или описанию",
-                in: "query",
+                name: 'search',
+                description: 'Поиск по названию или описанию',
+                in: 'query',
                 required: false,
-                schema: new OA\Schema(type: "string")
+                schema: new OA\Schema(type: 'string')
             ),
             new OA\Parameter(
-                name: "sort_by",
-                description: "Поле для сортировки",
-                in: "query",
+                name: 'sort_by',
+                description: 'Поле для сортировки',
+                in: 'query',
                 required: false,
                 schema: new OA\Schema(
-                    type: "string",
-                    enum: ["id", "name", "price", "created_at"],
-                    default: "id"
+                    type: 'string',
+                    enum: ['id', 'name', 'price', 'created_at'],
+                    default: 'id'
                 )
             ),
             new OA\Parameter(
-                name: "sort_order",
-                description: "Порядок сортировки",
-                in: "query",
+                name: 'sort_order',
+                description: 'Порядок сортировки',
+                in: 'query',
                 required: false,
                 schema: new OA\Schema(
-                    type: "string",
-                    enum: ["asc", "desc"],
-                    default: "desc"
+                    type: 'string',
+                    enum: ['asc', 'desc'],
+                    default: 'desc'
                 )
             ),
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Успешный ответ",
-//                content: new OA\JsonContent(
-//                    properties: [
-//                        new OA\Property(
-//                            property: "data",
-//                            type: "array",
-//                            items: new OA\Items(ref: "#/components/schemas/ProductResource")
-//                        ),
-//                        new OA\Property(
-//                            property: "links",
-//                            ref: "#/components/schemas/PaginationLinks"
-//                        ),
-//                        new OA\Property(
-//                            property: "meta",
-//                            ref: "#/components/schemas/PaginationMeta"
-//                        ),
-//                    ]
-//                )
+                description: 'Успешный ответ',
+                //                content: new OA\JsonContent(
+                //                    properties: [
+                //                        new OA\Property(
+                //                            property: "data",
+                //                            type: "array",
+                //                            items: new OA\Items(ref: "#/components/schemas/ProductResource")
+                //                        ),
+                //                        new OA\Property(
+                //                            property: "links",
+                //                            ref: "#/components/schemas/PaginationLinks"
+                //                        ),
+                //                        new OA\Property(
+                //                            property: "meta",
+                //                            ref: "#/components/schemas/PaginationMeta"
+                //                        ),
+                //                    ]
+                //                )
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
-                        new OA\Property(property: "message", type: "string", nullable: true),
-                        new OA\Property(property: "code", type: "integer", example: 200),
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'data', ref: '#/components/schemas/ProductResource'),
+                        new OA\Property(property: 'message', type: 'string', nullable: true),
+                        new OA\Property(property: 'code', type: 'integer', example: 200),
                     ]
                 )
             ),
@@ -233,7 +228,7 @@ class ProductController extends Controller
         $products = $query->paginate($perPage);
 
         // ВОТ ГЛАВНОЕ - используем ProductResource::collection()
-//        return ProductResource::collection($products);
+        //        return ProductResource::collection($products);
         return $this->paginatedResponse(
             $products,
             'Список продуктов получен успешно'
@@ -244,36 +239,36 @@ class ProductController extends Controller
      * Получить один продукт
      */
     #[OA\Get(
-        path: "/api/products/{id}",
-        summary: "Получить продукт по ID",
-        tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        path: '/api/products/{id}',
+        summary: 'Получить продукт по ID',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
-                description: "ID продукта",
-                in: "path",
+                name: 'id',
+                description: 'ID продукта',
+                in: 'path',
                 required: true,
-                schema: new OA\Schema(type: "integer")
-            )
+                schema: new OA\Schema(type: 'integer')
+            ),
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Успешный ответ",
+                description: 'Успешный ответ',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
-                        new OA\Property(property: "message", type: "string", nullable: true),
-                        new OA\Property(property: "code", type: "integer", example: 200),
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'data', ref: '#/components/schemas/ProductResource'),
+                        new OA\Property(property: 'message', type: 'string', nullable: true),
+                        new OA\Property(property: 'code', type: 'integer', example: 200),
                     ]
                 )
             ),
             new OA\Response(
                 response: 404,
-                description: "Продукт не найден",
-                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+                description: 'Продукт не найден',
+                content: new OA\JsonContent(ref: '#/components/schemas/NotFoundError')
             ),
 
         ]
@@ -283,40 +278,36 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-
-
-
-
     /**
      * Создать новый продукт
      */
     #[OA\Post(
-        path: "/api/products",
-        summary: "Создать новый продукт",
-        description: "Создает новый продукт и возвращает его данные",
-        tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        path: '/api/products',
+        summary: 'Создать новый продукт',
+        description: 'Создает новый продукт и возвращает его данные',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/CreateProductRequest")
+            content: new OA\JsonContent(ref: '#/components/schemas/CreateProductRequest')
         ),
         responses: [
             new OA\Response(
                 response: 201,
-                description: "Продукт успешно создан",
+                description: 'Продукт успешно создан',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "message", type: "string", example: "Продукт успешно создан"),
-                        new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
-                        new OA\Property(property: "code", type: "integer", example: 201),
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Продукт успешно создан'),
+                        new OA\Property(property: 'data', ref: '#/components/schemas/ProductResource'),
+                        new OA\Property(property: 'code', type: 'integer', example: 201),
                     ]
                 )
             ),
             new OA\Response(
                 response: 422,
-                description: "Ошибка валидации",
-                content: new OA\JsonContent(ref: "#/components/schemas/ValidationError")
+                description: 'Ошибка валидации',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')
             ),
         ]
     )]
@@ -325,10 +316,10 @@ class ProductController extends Controller
         $validated = $request->validated();
         $product = $this->repository->create($validated);
 
-//        return response()->json([
-//            'message' => 'Продукт успешно создан',
-//            'data' => new ProductResource($product),
-//        ], 201);
+        //        return response()->json([
+        //            'message' => 'Продукт успешно создан',
+        //            'data' => new ProductResource($product),
+        //        ], 201);
         return $this->createdResponse(
             new ProductResource($product),
             'Продукт успешно создан'
@@ -339,83 +330,83 @@ class ProductController extends Controller
      * Обновить продукт
      */
     #[OA\Put(
-        path: "/api/products/{id}",
-        summary: "Обновить продукт",
-        description: "Обновляет данные продукта и возвращает обновленный продукт",
-        tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        path: '/api/products/{id}',
+        summary: 'Обновить продукт',
+        description: 'Обновляет данные продукта и возвращает обновленный продукт',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
-                description: "ID продукта",
-                in: "path",
+                name: 'id',
+                description: 'ID продукта',
+                in: 'path',
                 required: true,
-                schema: new OA\Schema(type: "integer")
-            )
+                schema: new OA\Schema(type: 'integer')
+            ),
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/UpdateProductRequest")
+            content: new OA\JsonContent(ref: '#/components/schemas/UpdateProductRequest')
         ),
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Продукт успешно обновлен",
+                description: 'Продукт успешно обновлен',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", ref: "#/components/schemas/ProductResource"),
-                        new OA\Property(property: "message", type: "string", example: "Продукт успешно обновлен"),
-                        new OA\Property(property: "code", type: "integer", example: 200),
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'data', ref: '#/components/schemas/ProductResource'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Продукт успешно обновлен'),
+                        new OA\Property(property: 'code', type: 'integer', example: 200),
                     ]
                 )
             ),
             new OA\Response(
                 response: 404,
-                description: "Продукт не найден",
-                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+                description: 'Продукт не найден',
+                content: new OA\JsonContent(ref: '#/components/schemas/NotFoundError')
             ),
             new OA\Response(
                 response: 422,
-                description: "Ошибка валидации",
-                content: new OA\JsonContent(ref: "#/components/schemas/ValidationError")
+                description: 'Ошибка валидации',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')
             ),
         ]
     )]
     #[OA\Patch(
-        path: "/api/products/{id}",
-        summary: "Частично обновить продукт",
-        description: "Частично обновляет данные продукта",
-        tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        path: '/api/products/{id}',
+        summary: 'Частично обновить продукт',
+        description: 'Частично обновляет данные продукта',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
-                description: "ID продукта",
-                in: "path",
+                name: 'id',
+                description: 'ID продукта',
+                in: 'path',
                 required: true,
-                schema: new OA\Schema(type: "integer")
-            )
+                schema: new OA\Schema(type: 'integer')
+            ),
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/UpdateProductRequest")
+            content: new OA\JsonContent(ref: '#/components/schemas/UpdateProductRequest')
         ),
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Продукт успешно обновлен",
-                content: new OA\JsonContent(ref: "#/components/schemas/ProductResource")
+                description: 'Продукт успешно обновлен',
+                content: new OA\JsonContent(ref: '#/components/schemas/ProductResource')
             ),
             new OA\Response(
                 response: 404,
-                description: "Продукт не найден",
-                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+                description: 'Продукт не найден',
+                content: new OA\JsonContent(ref: '#/components/schemas/NotFoundError')
             ),
             new OA\Response(
                 response: 422,
-                description: "Ошибка валидации",
-                content: new OA\JsonContent(ref: "#/components/schemas/ValidationError")
+                description: 'Ошибка валидации',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')
             ),
         ]
     )]
@@ -431,47 +422,47 @@ class ProductController extends Controller
     }
 
     /**
-     * Удалить продукт (мягкое удаление)
+     * Удалить продукт (мягкое удаление).
      */
     #[OA\Delete(
-        path: "/api/products/{id}",
-        summary: "Удалить продукт",
-        description: "Выполняет мягкое удаление продукта",
-        tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        path: '/api/products/{id}',
+        summary: 'Удалить продукт',
+        description: 'Выполняет мягкое удаление продукта',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
-                description: "ID продукта",
-                in: "path",
+                name: 'id',
+                description: 'ID продукта',
+                in: 'path',
                 required: true,
-                schema: new OA\Schema(type: "integer")
-            )
+                schema: new OA\Schema(type: 'integer')
+            ),
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Продукт успешно удален",
+                description: 'Продукт успешно удален',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: "success", type: "boolean", example: true),
-                        new OA\Property(property: "data", type: "object", nullable: true),
-                        new OA\Property(property: "message", type: "string", example: "Продукт успешно удален"),
-                        new OA\Property(property: "code", type: "integer", example: 200),
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'data', type: 'object', nullable: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Продукт успешно удален'),
+                        new OA\Property(property: 'code', type: 'integer', example: 200),
                     ]
                 )
             ),
             new OA\Response(
                 response: 404,
-                description: "Продукт не найден",
-                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+                description: 'Продукт не найден',
+                content: new OA\JsonContent(ref: '#/components/schemas/NotFoundError')
             ),
         ]
     )]
     public function destroy(Product $product): JsonResponse
     {
-//        $product = $this->repository->findOrFail($id);
-//        $this->repository->delete($id);
+        //        $product = $this->repository->findOrFail($id);
+        //        $this->repository->delete($id);
         $product->delete();
 
         return $this->successResponse(
@@ -484,30 +475,30 @@ class ProductController extends Controller
      * Восстановить удаленный продукт
      */
     #[OA\Post(
-        path: "/api/products/{id}/restore",
-        summary: "Восстановить удаленный продукт",
-        description: "Восстанавливает мягко удаленный продукт",
-        tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        path: '/api/products/{id}/restore',
+        summary: 'Восстановить удаленный продукт',
+        description: 'Восстанавливает мягко удаленный продукт',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
-                description: "ID продукта",
-                in: "path",
+                name: 'id',
+                description: 'ID продукта',
+                in: 'path',
                 required: true,
-                schema: new OA\Schema(type: "integer")
-            )
+                schema: new OA\Schema(type: 'integer')
+            ),
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Продукт успешно восстановлен",
-                content: new OA\JsonContent(ref: "#/components/schemas/ProductResource")
+                description: 'Продукт успешно восстановлен',
+                content: new OA\JsonContent(ref: '#/components/schemas/ProductResource')
             ),
             new OA\Response(
                 response: 404,
-                description: "Продукт не найден",
-                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+                description: 'Продукт не найден',
+                content: new OA\JsonContent(ref: '#/components/schemas/NotFoundError')
             ),
         ]
     )]
@@ -523,27 +514,27 @@ class ProductController extends Controller
     }
 
     /**
-     * Полное удаление продукта
+     * Полное удаление продукта.
      */
     #[OA\Delete(
-        path: "/api/products/{id}/force",
-        summary: "Полное удаление продукта",
-        description: "Полностью удаляет продукт из базы данных (включая мягко удаленные)",
-        tags: ["Products"],
-         security: [['bearerAuth' => []]],
+        path: '/api/products/{id}/force',
+        summary: 'Полное удаление продукта',
+        description: 'Полностью удаляет продукт из базы данных (включая мягко удаленные)',
+        tags: ['Products'],
+        security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
-                name: "id",
-                description: "ID продукта",
-                in: "path",
+                name: 'id',
+                description: 'ID продукта',
+                in: 'path',
                 required: true,
-                schema: new OA\Schema(type: "integer")
-            )
+                schema: new OA\Schema(type: 'integer')
+            ),
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Продукт полностью удален",
+                description: 'Продукт полностью удален',
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: 'message', type: 'string'),
@@ -552,8 +543,8 @@ class ProductController extends Controller
             ),
             new OA\Response(
                 response: 404,
-                description: "Продукт не найден",
-                content: new OA\JsonContent(ref: "#/components/schemas/NotFoundError")
+                description: 'Продукт не найден',
+                content: new OA\JsonContent(ref: '#/components/schemas/NotFoundError')
             ),
         ]
     )]
@@ -568,18 +559,17 @@ class ProductController extends Controller
 
 }
 
-
-//namespace App\Http\Controllers\Api;
+// namespace App\Http\Controllers\Api;
 //
-//use App\Http\Controllers\Controller;
-//use App\Http\Resources\ProductCollection;
-//use App\Services\ProductService;
-//use Illuminate\Http\Request;
-//use Illuminate\Http\JsonResponse;
-//use Illuminate\Http\Response;
+// use App\Http\Controllers\Controller;
+// use App\Http\Resources\ProductCollection;
+// use App\Services\ProductService;
+// use Illuminate\Http\Request;
+// use Illuminate\Http\JsonResponse;
+// use Illuminate\Http\Response;
 //
-//class ProductController extends Controller
-//{
+// class ProductController extends Controller
+// {
 //    protected ProductService $service;
 //
 //    public function __construct(ProductService $service)
@@ -590,8 +580,8 @@ class ProductController extends Controller
 //    public function index(): JsonResponse
 //    {
 //        $products = $this->service->getAllProducts();
-////        dd($products);
-////        return response()->json($products);
+// //        dd($products);
+// //        return response()->json($products);
 //        return response()->json(new ProductCollection($products));
 //    }
 //
@@ -654,4 +644,4 @@ class ProductController extends Controller
 //
 //        return response()->json($products);
 //    }
-//}
+// }

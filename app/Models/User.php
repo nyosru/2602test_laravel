@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +11,9 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -54,15 +55,15 @@ class User extends Authenticatable
     }
 
     /**
-     * Получить продукты пользователя
+     * Получить продукты пользователя.
      */
     public function products()
     {
-        return $this->hasMany(\App\Models\Product::class);
+        return $this->hasMany(Product::class);
     }
 
     /**
-     * Все платежи пользователя
+     * Все платежи пользователя.
      */
     public function payments()
     {
@@ -70,7 +71,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Входящие платежи (в сторону пользователя)
+     * Входящие платежи (в сторону пользователя).
      */
     public function incomingPayments()
     {
@@ -79,7 +80,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Исходящие платежи (от пользователя)
+     * Исходящие платежи (от пользователя).
      */
     public function outgoingPayments()
     {
@@ -96,11 +97,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Проверить лимит API запросов
+     * Проверить лимит API запросов.
      */
     public function hasApiLimitExceeded(): bool
     {
-        if (is_null($this->api_limit)) {
+        if (null === $this->api_limit) {
             return false;
         }
 
@@ -116,7 +117,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Создать токен с определенными разрешениями
+     * Создать токен с определенными разрешениями.
      */
     public function createApiToken(string $name = 'api-token'): string
     {
@@ -135,7 +136,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Отозвать все токены, кроме текущего
+     * Отозвать все токены, кроме текущего.
      */
     public function revokeOtherTokens(): void
     {
@@ -150,7 +151,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Отозвать ВСЕ токены пользователя
+     * Отозвать ВСЕ токены пользователя.
      */
     public function revokeAllTokens(): void
     {
@@ -158,7 +159,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Получить количество активных токенов
+     * Получить количество активных токенов.
      */
     public function getActiveTokensCount(): int
     {

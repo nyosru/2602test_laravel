@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
-//        $this->app->singleton(VirtualBrowserService::class);
+        //        $this->app->singleton(VirtualBrowserService::class);
         $this->app->singleton(BrowserRenderService::class);
     }
 

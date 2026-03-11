@@ -19,8 +19,9 @@ class UserWithTokenResource extends JsonResource
         return array_merge($userData, [
             'token' => $this->when($this->token, $this->token),
             'token_type' => 'Bearer',
-            'token_expires_at' => $this->when($this->token_expires_at,
-                fn() => $this->token_expires_at?->toDateTimeString()
+            'token_expires_at' => $this->when(
+                $this->token_expires_at,
+                fn () => $this->token_expires_at?->toDateTimeString()
             ),
         ]);
     }

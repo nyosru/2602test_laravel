@@ -24,9 +24,7 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: 'Products', description: 'Операции с продуктами')]
 #[OA\Tag(name: 'Authentication', description: 'Аутентификация и управление пользователями')]
 
-
 class ApiInfo
 {
     // этот класс может быть пустым — важно только наличие атрибутов
 }
-

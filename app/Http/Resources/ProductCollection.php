@@ -4,16 +4,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use OpenApi\Attributes as OA;
-
 
 class ProductCollection extends ResourceCollection
 {
-
     public array $data;
 
     public array $meta;
-
 
     public array $links;
 
@@ -33,22 +29,21 @@ class ProductCollection extends ResourceCollection
         ];
     }
 
-
     /**
-     * Получить ссылки пагинации
+     * Получить ссылки пагинации.
      */
     protected function getLinks(): array
     {
         return [
-//            'first' => $this->url(1),
-//            'last' => $this->url($this->lastPage()),
-//            'prev' => $this->previousPageUrl(),
-//            'next' => $this->nextPageUrl(),
+            //            'first' => $this->url(1),
+            //            'last' => $this->url($this->lastPage()),
+            //            'prev' => $this->previousPageUrl(),
+            //            'next' => $this->nextPageUrl(),
         ];
     }
 
     /**
-     * Получить мета-данные пагинации
+     * Получить мета-данные пагинации.
      */
     protected function getMeta(): array
     {
@@ -71,7 +66,7 @@ class ProductCollection extends ResourceCollection
     }
 
     /**
-     * Дополнительные данные в ответе
+     * Дополнительные данные в ответе.
      */
     public function with(Request $request): array
     {

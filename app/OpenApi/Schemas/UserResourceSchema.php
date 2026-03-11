@@ -196,7 +196,6 @@ use OpenApi\Attributes as OA;
     ]
 )]
 
-
 #[OA\Schema(
     schema: 'UserTokenRandomInfo',
     type: 'object',
@@ -238,7 +237,6 @@ use OpenApi\Attributes as OA;
     ]
 )]
 
-
 #[OA\Schema(
     schema: 'CurrentUserWithTokenInfo',
     type: 'object',
@@ -270,7 +268,6 @@ use OpenApi\Attributes as OA;
         ),
     ]
 )]
-
 
 #[OA\Schema(
     schema: 'UserProfileResource',
@@ -339,4 +336,6 @@ use OpenApi\Attributes as OA;
         ),
     ]
 )]
-class UserResourceSchema {}
+class UserResourceSchema
+{
+}

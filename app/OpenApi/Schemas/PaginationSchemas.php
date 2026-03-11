@@ -114,18 +114,36 @@ use OpenApi\Attributes as OA;
                     property: 'links',
                     type: 'object',
                     properties: [
-                        new OA\Property( property: 'first', type: 'string', format: 'uri',
-                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
-                        new OA\Property( property: 'last', type: 'string', format: 'uri',
-                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
-                        new OA\Property( property: 'prev', type: 'string', format: 'uri',
-                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
-                        new OA\Property( property: 'next', type: 'string', format: 'uri',
-                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1' ),
+                        new OA\Property(
+                            property: 'first',
+                            type: 'string',
+                            format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1'
+                        ),
+                        new OA\Property(
+                            property: 'last',
+                            type: 'string',
+                            format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1'
+                        ),
+                        new OA\Property(
+                            property: 'prev',
+                            type: 'string',
+                            format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1'
+                        ),
+                        new OA\Property(
+                            property: 'next',
+                            type: 'string',
+                            format: 'uri',
+                            example: 'https://laravel.test.php-cat.com/api/public/products?page=1'
+                        ),
                     ]
                 ),
             ]
         ),
     ]
 )]
-class PaginationSchemas {}
+class PaginationSchemas
+{
+}

@@ -39,4 +39,6 @@ use OpenApi\Attributes as OA;
         ),
     ]
 )]
-class ProductSchema {}
+class ProductSchema
+{
+}

@@ -27,15 +27,15 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password'          => Hash::make('password123'), // или Str::random(12)
             'remember_token'    => Str::random(10),
-//            'is_admin'          => false,
-//            'api_limit'         => null,
+            //            'is_admin'          => false,
+            //            'api_limit'         => null,
             'created_at'        => now(),
             'updated_at'        => now(),
         ];
     }
 
     /**
-     * Состояние: пользователь с подтверждённым email
+     * Состояние: пользователь с подтверждённым email.
      */
     public function verified(): static
     {
@@ -45,7 +45,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Состояние: пользователь без подтверждённого email
+     * Состояние: пользователь без подтверждённого email.
      */
     public function unverified(): static
     {
@@ -77,7 +77,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Состояние: пользователь с конкретным паролем (удобно для тестов авторизации)
+     * Состояние: пользователь с конкретным паролем (удобно для тестов авторизации).
      */
     public function withPassword(string $password): static
     {
@@ -87,7 +87,7 @@ class UserFactory extends Factory
     }
 
     /**
-     * Состояние: пользователь с конкретным email (удобно для тестов логина/регистрации)
+     * Состояние: пользователь с конкретным email (удобно для тестов логина/регистрации).
      */
     public function withEmail(string $email): static
     {

@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Service extends Model
 {
     /** @use HasFactory<\Database\Factories\ServiceFactory> */
-    use HasFactory,SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
     protected $fillable = ['name', 'description', 'price'];
-    public function dealItems() {
+    public function dealItems()
+    {
         return $this->morphMany(DealItem::class, 'item');
     }
 }

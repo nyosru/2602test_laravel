@@ -4,7 +4,6 @@ namespace App\OpenApi\Schemas;
 
 use OpenApi\Attributes as OA;
 
-
 #[OA\Schema(
     schema: 'UnauthorizedError',
     type: 'object',
@@ -40,4 +39,6 @@ use OpenApi\Attributes as OA;
     ]
 )]
 
-class ErrorSchemas {}
+class ErrorSchemas
+{
+}

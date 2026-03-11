@@ -3,6 +3,20 @@
         <h1>Судоку <img src="/img/cat.png" class="cat-icon" /> <a href="https://php-cat.com" class="up_link" target="_blank" >php-cat.com</a></h1>
 
         <div class="game-container">
+            <div v-if="hasWon" class="victory-overlay">
+                <div class="fireworks">
+                    <span class="firework firework-a"></span>
+                    <span class="firework firework-b"></span>
+                    <span class="firework firework-c"></span>
+                </div>
+                <div class="victory-modal">
+                    <div class="victory-title">Победа!</div>
+                    <button class="victory-button" @click="generateNewGame">
+                        Начать новую игру
+                    </button>
+                </div>
+            </div>
+
             <div class="sudoku-grid">
                 <div
                     v-for="(row, rowIndex) in board"
@@ -49,14 +63,15 @@
                         v-for="num in 9"
                         :key="num"
                         @click="setNumber(num)"
-                        :disabled="!selectedCell || board[selectedCell.row][selectedCell.col].isFixed"
+                        :disabled="gameOver || hasWon || !selectedCell || board[selectedCell.row][selectedCell.col].isFixed"
                         class="number-btn"
+                        :class="{ 'completed-number': isNumberCompleted(num) }"
                     >
                         {{ num }}
                     </button>
                     <button
                         @click="clearCell"
-                        :disabled="!selectedCell || board[selectedCell.row][selectedCell.col].isFixed"
+                        :disabled="gameOver || hasWon || !selectedCell || board[selectedCell.row][selectedCell.col].isFixed"
                         class="number-btn clear-btn"
                     >
                         ⌫
@@ -64,21 +79,28 @@
                 </div>
 
                 <div class="action-buttons">
-                    <button @click="toggleNoteMode" :class="{ 'active': noteMode }">
+                    <button @click="toggleNoteMode" :class="{ 'active': noteMode }" :disabled="gameOver || hasWon">
                         📝 Режим заметок
                     </button>
-                    <button @click="addNotesToAllEmpty">
+                    <button @click="addNotesToAllEmpty" :disabled="gameOver || hasWon">
                         📋 Заметки во все пустые поля
                     </button>
-                    <button @click="clearAllNotes">
+                    <button @click="clearAllNotes" :disabled="gameOver || hasWon">
                         🗑️ Очистить все заметки
+                    </button>
+                    <button @click="undoLastMove" :disabled="history.length === 0">
+                        ↩ Отмена последней цифры
                     </button>
                     <button @click="generateNewGame">
                         🔄 Новая игра
                     </button>
-                    <button @click="checkSolution">
+                    <button @click="checkSolution" :disabled="gameOver || hasWon">
                         ✓ Проверить
                     </button>
+                </div>
+
+                <div class="mistakes-counter" :class="{ 'limit-reached': gameOver }">
+                    Ошибки: {{ mistakes }} / {{ maxMistakes }}
                 </div>
 
                 <div class="difficulty-selector">
@@ -127,6 +149,11 @@ export default {
         const message = ref('')
         const isError = ref(false)
         const difficulty = ref('medium')
+        const mistakes = ref(0)
+        const maxMistakes = 3
+        const gameOver = ref(false)
+        const hasWon = ref(false)
+        const history = ref([])
 
         // Генератор полностью заполненного судоку
         const generateFullSudoku = () => {
@@ -276,6 +303,10 @@ export default {
             board.value = createBoardFromPuzzle(puzzle)
             selectedCell.value = null
             noteMode.value = false
+            mistakes.value = 0
+            gameOver.value = false
+            hasWon.value = false
+            history.value = []
             message.value = 'Новая игра сгенерирована!'
             isError.value = false
             setTimeout(() => { message.value = '' }, 2000)
@@ -289,6 +320,10 @@ export default {
 
         // Обработчик нажатий клавиш
         const handleKeyDown = (event) => {
+            if (gameOver.value || hasWon.value) {
+                return
+            }
+
             // Проверяем, что выбрана ячейка
             if (!selectedCell.value) {
                 return
@@ -367,7 +402,63 @@ export default {
         })
 
         const selectCell = (row, col) => {
+            if (gameOver.value || hasWon.value) return
             selectedCell.value = { row, col }
+        }
+
+        const cloneBoardState = () => {
+            return board.value.map(row =>
+                row.map(cell => ({
+                    ...cell,
+                    notes: [...cell.notes]
+                }))
+            )
+        }
+
+        const saveHistorySnapshot = () => {
+            history.value.push({
+                board: cloneBoardState(),
+                mistakes: mistakes.value,
+                gameOver: gameOver.value,
+                hasWon: hasWon.value,
+                selectedCell: selectedCell.value ? { ...selectedCell.value } : null
+            })
+        }
+
+        const countPlacedNumber = (num) => {
+            let count = 0
+
+            for (const row of board.value) {
+                for (const cell of row) {
+                    if (cell.value === num) {
+                        count += 1
+                    }
+                }
+            }
+
+            return count
+        }
+
+        const isNumberCompleted = (num) => countPlacedNumber(num) === 9
+
+        const isBoardFilled = () => {
+            for (const row of board.value) {
+                for (const cell of row) {
+                    if (cell.value === 0) {
+                        return false
+                    }
+                }
+            }
+
+            return true
+        }
+
+        const triggerVictory = () => {
+            hasWon.value = true
+            noteMode.value = false
+            selectedCell.value = null
+            message.value = 'Победа!'
+            isError.value = false
         }
 
         const isCellHighlighted = (row, col) => {
@@ -431,7 +522,94 @@ export default {
             }
         }
 
+        const canCompleteCurrentBoard = () => {
+            const grid = board.value.map(row => row.map(cell => cell.value))
+
+            const isValidInGrid = (row, col, num) => {
+                for (let i = 0; i < 9; i++) {
+                    if (i !== col && grid[row][i] === num) return false
+                }
+
+                for (let i = 0; i < 9; i++) {
+                    if (i !== row && grid[i][col] === num) return false
+                }
+
+                const blockRow = Math.floor(row / 3) * 3
+                const blockCol = Math.floor(col / 3) * 3
+
+                for (let i = 0; i < 3; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        const currentRow = blockRow + i
+                        const currentCol = blockCol + j
+
+                        if ((currentRow !== row || currentCol !== col) && grid[currentRow][currentCol] === num) {
+                            return false
+                        }
+                    }
+                }
+
+                return true
+            }
+
+            const findBestEmptyCell = () => {
+                let bestCell = null
+                let bestCandidates = null
+
+                for (let row = 0; row < 9; row++) {
+                    for (let col = 0; col < 9; col++) {
+                        if (grid[row][col] !== 0) continue
+
+                        const candidates = []
+                        for (let num = 1; num <= 9; num++) {
+                            if (isValidInGrid(row, col, num)) {
+                                candidates.push(num)
+                            }
+                        }
+
+                        if (candidates.length === 0) {
+                            return { row, col, candidates }
+                        }
+
+                        if (!bestCandidates || candidates.length < bestCandidates.length) {
+                            bestCell = { row, col }
+                            bestCandidates = candidates
+                        }
+                    }
+                }
+
+                if (!bestCell) return null
+
+                return { ...bestCell, candidates: bestCandidates }
+            }
+
+            const solve = () => {
+                const emptyCell = findBestEmptyCell()
+                if (!emptyCell) return true
+                if (emptyCell.candidates.length === 0) return false
+
+                const { row, col, candidates } = emptyCell
+
+                for (const num of candidates) {
+                    grid[row][col] = num
+
+                    if (solve()) {
+                        return true
+                    }
+
+                    grid[row][col] = 0
+                }
+
+                return false
+            }
+
+            return solve()
+        }
+
         const setNumber = (num) => {
+            if (gameOver.value || hasWon.value) {
+                return
+            }
+
             if (!selectedCell.value) {
                 message.value = 'Выберите ячейку'
                 isError.value = true
@@ -458,13 +636,42 @@ export default {
                     cell.notes.splice(noteIndex, 1)
                 }
             } else {
+                saveHistorySnapshot()
                 cell.value = num
                 cell.notes = []
 
                 removeNotesFromRelatedCells(row, col, num)
                 checkAllCellsForErrors()
 
-                message.value = ''
+                const canComplete = canCompleteCurrentBoard()
+
+                if (cell.isError || !canComplete) {
+                    if (!cell.isError) {
+                        cell.isError = true
+                    }
+
+                    mistakes.value += 1
+                    isError.value = true
+
+                    if (mistakes.value >= maxMistakes) {
+                        gameOver.value = true
+                        noteMode.value = false
+                        message.value = !canComplete
+                            ? 'Этот ход делает поле нерешаемым. Достигнут лимит в 3 ошибки.'
+                            : 'Это неверная цифра. Достигнут лимит в 3 ошибки.'
+                    } else {
+                        message.value = !canComplete
+                            ? `Этот ход делает поле нерешаемым. Ошибка ${mistakes.value} из ${maxMistakes}.`
+                            : `Это неверная цифра. Ошибка ${mistakes.value} из ${maxMistakes}.`
+                    }
+                } else {
+                    if (isBoardFilled()) {
+                        triggerVictory()
+                    } else {
+                        message.value = ''
+                        isError.value = false
+                    }
+                }
             }
         }
 
@@ -490,34 +697,64 @@ export default {
             return true
         }
 
+        const isAvailableInRowAndColumn = (row, col, num) => {
+            for (let i = 0; i < 9; i++) {
+                if (i !== col && board.value[row][i].value === num) return false
+            }
+
+            for (let i = 0; i < 9; i++) {
+                if (i !== row && board.value[i][col].value === num) return false
+            }
+
+            const blockRow = Math.floor(row / 3) * 3
+            const blockCol = Math.floor(col / 3) * 3
+
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const currentRow = blockRow + i
+                    const currentCol = blockCol + j
+
+                    if ((currentRow !== row || currentCol !== col) && board.value[currentRow][currentCol].value === num) {
+                        return false
+                    }
+                }
+            }
+
+            return true
+        }
+
         const clearCell = () => {
-            if (!selectedCell.value) return
+            if (gameOver.value || hasWon.value || !selectedCell.value) return
 
             const { row, col } = selectedCell.value
             const cell = board.value[row][col]
 
-            if (!cell.isFixed) {
+            if (!cell.isFixed && (cell.value !== 0 || cell.notes.length > 0)) {
+                saveHistorySnapshot()
                 cell.value = 0
                 cell.notes = []
                 cell.isError = false
                 message.value = ''
+                isError.value = false
 
                 checkAllCellsForErrors()
             }
         }
 
         const toggleNoteMode = () => {
+            if (gameOver.value || hasWon.value) return
             noteMode.value = !noteMode.value
         }
 
         const addNotesToAllEmpty = () => {
+            if (gameOver.value || hasWon.value) return
             for (let row = 0; row < 9; row++) {
                 for (let col = 0; col < 9; col++) {
                     const cell = board.value[row][col]
                     if (cell.value === 0) {
                         const possibleNumbers = []
                         for (let num = 1; num <= 9; num++) {
-                            if (isValidMove(row, col, num)) {
+                            if (isAvailableInRowAndColumn(row, col, num)) {
                                 possibleNumbers.push(num)
                             }
                         }
@@ -531,6 +768,7 @@ export default {
         }
 
         const clearAllNotes = () => {
+            if (gameOver.value || hasWon.value) return
             for (let row = 0; row < 9; row++) {
                 for (let col = 0; col < 9; col++) {
                     board.value[row][col].notes = []
@@ -541,7 +779,34 @@ export default {
             setTimeout(() => { message.value = '' }, 2000)
         }
 
+        const undoLastMove = () => {
+            const previousState = history.value.pop()
+            if (!previousState) return
+
+            board.value = previousState.board
+            mistakes.value = previousState.mistakes
+            gameOver.value = previousState.gameOver
+            hasWon.value = previousState.hasWon
+            selectedCell.value = previousState.selectedCell
+            isError.value = false
+            message.value = 'Последний ход отменен'
+            checkAllCellsForErrors()
+            setTimeout(() => { message.value = '' }, 2000)
+        }
+
         const checkSolution = () => {
+            if (gameOver.value) {
+                message.value = 'Игра окончена. Начните новую игру.'
+                isError.value = true
+                return
+            }
+
+            if (hasWon.value) {
+                message.value = 'Победа!'
+                isError.value = false
+                return
+            }
+
             for (let row = 0; row < 9; row++) {
                 for (let col = 0; col < 9; col++) {
                     if (board.value[row][col].value === 0) {
@@ -563,8 +828,7 @@ export default {
                 }
             }
 
-            message.value = 'Поздравляем! Решение верное!'
-            isError.value = false
+            triggerVictory()
         }
 
         return {
@@ -574,14 +838,21 @@ export default {
             message,
             isError,
             difficulty,
+            mistakes,
+            maxMistakes,
+            gameOver,
+            hasWon,
+            history,
             selectCell,
             isCellHighlighted,
             isSameValue,
+            isNumberCompleted,
             setNumber,
             clearCell,
             toggleNoteMode,
             addNotesToAllEmpty,
             clearAllNotes,
+            undoLastMove,
             generateNewGame,
             setDifficulty,
             checkSolution
@@ -608,6 +879,7 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    position: relative;
 }
 
 .sudoku-grid {
@@ -685,18 +957,24 @@ h1 {
 .notes-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, minmax(0, 1fr));
     gap: 2px;
     width: 100%;
     height: 100%;
     padding: 2px;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .note {
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     color: transparent;
+    min-width: 0;
+    min-height: 0;
 }
 
 .note.active {
@@ -744,6 +1022,12 @@ h1 {
     cursor: not-allowed;
 }
 
+.number-btn.completed-number {
+    background-color: #e0e0e0;
+    color: #666;
+    border-color: #bdbdbd;
+}
+
 .clear-btn {
     background-color: #ffebee;
     color: #c62828;
@@ -777,10 +1061,129 @@ h1 {
     transform: scale(1.02);
 }
 
+.action-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .action-buttons button.active {
     background-color: #2196f3;
     color: white;
     border-color: #1976d2;
+}
+
+.mistakes-counter {
+    text-align: center;
+    font-weight: bold;
+    color: #c62828;
+    background-color: #ffebee;
+    border: 1px solid #ef9a9a;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.mistakes-counter.limit-reached {
+    color: white;
+    background-color: #c62828;
+    border-color: #b71c1c;
+}
+
+.victory-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.victory-modal {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 24px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.16);
+}
+
+.victory-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #2e7d32;
+}
+
+.victory-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 999px;
+    background: #2e7d32;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.fireworks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.firework {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow:
+        0 -34px 0 0 #ff7043,
+        24px -24px 0 0 #42a5f5,
+        34px 0 0 0 #ffee58,
+        24px 24px 0 0 #ab47bc,
+        0 34px 0 0 #66bb6a,
+        -24px 24px 0 0 #ffa726,
+        -34px 0 0 0 #ef5350,
+        -24px -24px 0 0 #26c6da;
+    animation: firework-burst 1.6s ease-out infinite;
+}
+
+.firework-a {
+    top: 28%;
+    left: 25%;
+}
+
+.firework-b {
+    top: 22%;
+    right: 24%;
+    animation-delay: 0.35s;
+}
+
+.firework-c {
+    bottom: 24%;
+    left: 50%;
+    animation-delay: 0.7s;
+}
+
+@keyframes firework-burst {
+    0% {
+        transform: scale(0.2);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.1);
+        opacity: 0;
+    }
 }
 
 .difficulty-selector {
@@ -871,7 +1274,8 @@ h1 {
     }
 
     .note {
-        font-size: 8px;
+        font-size: 9px;
+        line-height: 1;
     }
 
     .number-btn {
@@ -893,6 +1297,10 @@ h1 {
     .keyboard-hint {
         font-size: 12px;
         padding: 6px;
+    }
+
+    .victory-title {
+        font-size: 28px;
     }
 }
 

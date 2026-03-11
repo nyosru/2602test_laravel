@@ -10,7 +10,7 @@ class Payment extends Model
     use HasFactory;
 
     /**
-     * Атрибуты для массового заполнения
+     * Атрибуты для массового заполнения.
      *
      * @var array<int, string>
      */
@@ -24,11 +24,10 @@ class Payment extends Model
     ];
 
     /**
-     * Пользователь, к которому относится платёж
+     * Пользователь, к которому относится платёж.
      */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 }
-

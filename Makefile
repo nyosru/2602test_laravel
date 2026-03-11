@@ -1,3 +1,14 @@
+linter:
+	@echo "делаем линтер (найдёт всё и поправит)"
+	@sleep 3
+	 ./vendor/bin/pint
+
+linter-show:
+	@echo "смотрим что линтер видит (проверяет показывает косяки, без правок)"
+	@sleep 3
+	 ./vendor/bin/pint -v
+
+
 s:
 	@echo "Генерирую свагер документацию, смотреть тут /api/documentation"
 	php artisan l5-swagger:generate

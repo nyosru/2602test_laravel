@@ -37,4 +37,6 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'code', type: 'integer', example: 201),
     ]
 )]
-class ProductResponseSchemas {}
+class ProductResponseSchemas
+{
+}

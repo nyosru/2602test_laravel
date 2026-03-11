@@ -9,12 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DealItem extends Model
 {
     /** @use HasFactory<\Database\Factories\DealItemFactory> */
-    use HasFactory,SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
     protected $fillable = ['deal_id', 'item_id', 'item_type', 'quantity', 'price'];
-    public function item() {
+    public function item()
+    {
         return $this->morphTo();
     }
-    public function deal() {
+    public function deal()
+    {
         return $this->belongsTo(Deal::class);
     }
 

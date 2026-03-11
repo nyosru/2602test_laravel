@@ -58,7 +58,7 @@ class ProductRepository implements ProductRepositoryInterface
         return $this->model->create($data);
     }
 
-    public function update( $id, array $data): bool
+    public function update($id, array $data): bool
     {
         $product = $this->find($id);
 
@@ -68,8 +68,8 @@ class ProductRepository implements ProductRepositoryInterface
 
         return $product->update($data);
 
-//        return $this->model->find($id);
-//        return $product;
+        //        return $this->model->find($id);
+        //        return $product;
     }
 
     public function updateOrFail(int $id, array $data): Product

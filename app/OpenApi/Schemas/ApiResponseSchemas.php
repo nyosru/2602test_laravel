@@ -78,4 +78,6 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'code', type: 'integer', example: 500),
     ]
 )]
-class ApiResponseSchemas {}
+class ApiResponseSchemas
+{
+}
