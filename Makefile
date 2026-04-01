@@ -9,13 +9,28 @@ linter-show:
 	 ./vendor/bin/pint -v
 
 
-s:
-	@echo "Генерирую свагер документацию, смотреть тут /api/documentation"
-	php artisan l5-swagger:generate
+swagger:
+	@echo "Генерирую оба swagger: index и logistic"
+	php artisan l5-swagger:generate index
+	php artisan l5-swagger:generate logistic
+
+s: swagger
+
+swagger-index:
+	@echo "Генерирую swagger index, смотреть тут /api/documentation"
+	php artisan l5-swagger:generate index
+
+swagger-logistic:
+	@echo "Генерирую swagger logistic, смотреть тут /api/documentation/logistic"
+	php artisan l5-swagger:generate logistic
 
 seed:
 	@printf "\033[37;44m%s\033[0m\n" " clean db and засеиваем рандомными данными базу "
 	php artisan migrate:fresh --seed
+
+seed-logistic:
+	@echo "Сидирую logistic-данные"
+	php artisan db:seed --class=Database\\Seeders\\LogisticSeeder
 
 dev:
 	@echo "Development environment started"

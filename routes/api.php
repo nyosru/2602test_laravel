@@ -62,6 +62,10 @@ Route::as('api.')->
 
     });
 
+Route::prefix('logistic')
+    ->as('api.logistic.')
+    ->group(base_path('routes/logistic_api.php'));
+
 // Пример маршрута с проверкой
 Route::get('/user', function (Request $request) {
     return $request->user();

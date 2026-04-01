@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'default' => 'default',
+    'default' => 'index',
     'documentations' => [
-        'default' => [
+        'index' => [
             'api' => [
                 'title' => 'L5 Swagger UI',
             ],
@@ -22,23 +22,47 @@ return [
                 'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
 
                 // File name of the generated json documentation file
-                'docs_json' => 'api-docs.json',
+                'docs_json' => 'index-api-docs.json',
 
                 // File name of the generated YAML documentation file
-                'docs_yaml' => 'api-docs.yaml',
+                'docs_yaml' => 'index-api-docs.yaml',
 
                 // Set this to `json` or `yaml` to determine which documentation file to use in UI
                 'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
 
                 // Absolute paths to directory containing the swagger annotations are stored.
                 'annotations' => [
-                    base_path('app'),
                     app_path('Http/Controllers'),
                     app_path('Http/Controllers/Api'),
                     app_path('Http/Controllers/Api/Auth'),
+                    app_path('Http/Requests'),
                     app_path('Http/Resources'),
                     app_path('OpenApi/Schemas'),
-                    app_path('OpenApi'),
+                    app_path('OpenApi/ApiInfo.php'),
+                    app_path('OpenApi/Schemas.php'),
+                ],
+            ],
+        ],
+        'logistic' => [
+            'api' => [
+                'title' => 'Logistic API',
+            ],
+
+            'routes' => [
+                'api' => 'api/documentation/logistic',
+                'docs' => 'docs/logistic',
+                'oauth2_callback' => 'api/oauth2-callback/logistic',
+            ],
+
+            'paths' => [
+                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
+                'docs_json' => 'logistic-api-docs.json',
+                'docs_yaml' => 'logistic-api-docs.yaml',
+                'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
+                'annotations' => [
+                    base_path('app/Logistic'),
+                    base_path('app/OpenApi/Logistic'),
                 ],
             ],
         ],

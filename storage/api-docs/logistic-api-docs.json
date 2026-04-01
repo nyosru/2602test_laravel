@@ -1,0 +1,351 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Logistic API",
+        "description": "API для резервирования слотов и управления активными удержаниями",
+        "version": "1.0.1"
+    },
+    "servers": [
+        {
+            "url": "/api/logistic",
+            "description": "Logistic API"
+        }
+    ],
+    "paths": {
+        "/slots/availability": {
+            "get": {
+                "tags": [
+                    "Slots"
+                ],
+                "summary": "Get available slots",
+                "operationId": "614870168d04c40600b407c2e199a0de",
+                "responses": {
+                    "200": {
+                        "description": "List of available slots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SlotResource"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "slot_id": 1,
+                                        "capacity": 10,
+                                        "remaining": 6
+                                    },
+                                    {
+                                        "slot_id": 2,
+                                        "capacity": 8,
+                                        "remaining": 3
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/slots/{id}/hold": {
+            "post": {
+                "tags": [
+                    "Holds"
+                ],
+                "summary": "Hold a slot by id",
+                "operationId": "5f2891a702c8b077e92ccd0c9a62f3ef",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Slot ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "UUID"
+                                ],
+                                "properties": {
+                                    "UUID": {
+                                        "description": "Unsigned integer UUID",
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "example": 123456
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Slot hold was created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HoldActionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Slot not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Slot has no remaining capacity",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/holds/current": {
+            "get": {
+                "tags": [
+                    "Holds"
+                ],
+                "summary": "Get current active holds",
+                "operationId": "a97bf71d24b923427b443cfb7359542b",
+                "responses": {
+                    "200": {
+                        "description": "List of current active holds",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/HoldResource"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/holds/{id}/confirm": {
+            "post": {
+                "tags": [
+                    "Holds"
+                ],
+                "summary": "Confirm an existing hold",
+                "operationId": "b2092bc9e3623aabd451e7ba3ad21597",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Hold ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hold was confirmed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HoldActionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Hold not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Invalid hold state for confirmation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/holds/{id}": {
+            "delete": {
+                "tags": [
+                    "Holds"
+                ],
+                "summary": "Cancel/Delete an existing hold",
+                "operationId": "5f519d302cd826e884ee6895bbd5f332",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Hold ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hold was cancelled/deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HoldActionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Hold not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SlotResource": {
+                "required": [
+                    "slot_id",
+                    "capacity",
+                    "remaining"
+                ],
+                "properties": {
+                    "slot_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "capacity": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "remaining": {
+                        "type": "integer",
+                        "example": 6
+                    }
+                },
+                "type": "object"
+            },
+            "HoldActionResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "ok"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "held"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-03-30T18:00:00+00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "HoldResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "to_slot": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "UUID": {
+                        "type": "integer",
+                        "example": 123456
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "held"
+                    },
+                    "at_end": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-03-30T18:00:00+00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Not found"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "Sanctum Token",
+                "description": "Введите только сам токен (без слова Bearer). Пример: 1|abcdefghijklmnopqrstuvwxyz1234567890abcdef"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Slots",
+            "description": "Slots"
+        },
+        {
+            "name": "Holds",
+            "description": "Holds"
+        }
+    ]
+}

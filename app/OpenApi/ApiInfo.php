@@ -10,8 +10,7 @@ use OpenApi\Attributes as OA;
     description: 'Полноценное REST API для работы с продуктами'
 )]
 
-#[OA\Server(url: 'https://laravel.test.php-cat.com', description: 'сайт в сети для тестов')]
-#[OA\Server(url: 'https://lara2602.local', description: 'Локальная площадка')]
+#[OA\Server(url: '/', description: 'API')]
 
 #[OA\SecurityScheme(
     securityScheme: 'bearerAuth',

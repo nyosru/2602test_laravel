@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth" >
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,6 +31,11 @@
             background-size: 300% 300%;
             animation: gradientX 20s ease infinite;
         }
+
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+
     </Style>
 
 </head>
@@ -79,9 +84,20 @@
      w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
         min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
+            <b>Доп. страница Jobassist</b>
+
+            <p><a href="/jobassist-test-task" target="_blank" class="underline text-blue-600">Открыть страницу задания</a></p>
+            <p>Отдельная страница с воссозданием макета из внешнего тестового задания.</p>
+
+        </div>
+
+        <div class="
+     w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
+        min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Модель Товары + API + swager</b>
 
-            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger</a>
+            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger index</a>
                 покликать API,
                 ключевая модель Product (остальные прицепом появились из&nbsp;других тест
                 заданий), слоёная структура проекта контроллер, сервис, репозиторий</p>
@@ -95,7 +111,7 @@
 
             <b>Модель Payment + API + swager</b>
 
-            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger</a>
+            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger index</a>
 
                 <br/>
 
@@ -129,6 +145,19 @@
             <br/>
             <p><a href="/vue3/" class="underline text-blue-600" target="_blank">Переход в&nbsp;vue3 приложение</a></p>
             <p>Получаем ссылку на&nbsp;компанию и&nbsp;показываем оценку и&nbsp;отзывы</p>
+
+        </div>
+
+        <div class="
+     w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
+        min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
+            <span class="float-right bg-green-400 p-1 rounded">Готово</span>
+            <b>Logistic API + swagger</b>
+
+            <p><a href="/api/documentation/logistic" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger logistic</a></p>
+            <p>Отдельная документация для логистического модуля со слотами, удержаниями, подтверждением и отменой hold.</p>
+            <p>В проект добавлены контроллеры, сервис, модели, миграции и feature-тесты из тестового logistic-стенда.</p>
+            <p><a href="#logistick" class="underline text-blue-600">Задание и видео лайв кодинга (смотреть на x5))</a></p>
 
         </div>
 
@@ -173,6 +202,10 @@
 
 {{--    <br/>--}}
 {{--    <br/>--}}
+
+    <div style="background-color: rgb(109,239,148); padding: 10px; position: sticky; top: 0;">
+        Логическая тест задача, обьяснить что да как
+    </div>
 
     <!-- Адаптивный контейнер: на десктопе — рядом, на мобилке — один под другим -->
     <div class="flex flex-col lg:flex-row gap-8 items-start ">
@@ -232,6 +265,12 @@
 
     </div>
 
+    <div id="logistick" style="margin-top:20px;">
+        <div style="background-color: rgb(125,125,239); padding: 10px; position: sticky; top: 0;">
+            Тест задание создание api (для логистики склада)
+        </div>
+        @include('jobassist-test-task')
+    </div>
 
 </div>
 

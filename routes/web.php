@@ -21,6 +21,10 @@ Route::get('explain_sql', function () {
     return view('explain_sql');
 })->name('test.explain_sql');
 
+Route::get('jobassist-test-task', function () {
+    return view('jobassist-test-task');
+})->name('test.jobassist_test_task');
+
 Route::get('', function () {
     return view('welcome');
 })->name('test.index');
