@@ -7,8 +7,8 @@
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
+{{--    <link rel="preconnect" href="https://fonts.bunny.net">--}}
+{{--    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>--}}
     <link href="/css/output.css?v={{ filemtime(public_path('/css/output.css')) }}" rel="stylesheet">
 
     <Style>
@@ -29,7 +29,7 @@
 
         .animate-gradient-x {
             background-size: 300% 300%;
-            animation: gradientX 20s ease infinite;
+            animation: gradientX 10s ease infinite;
         }
 
         .scroll-smooth {
@@ -67,7 +67,7 @@
 
 <div class="container mx-auto">
 
-    <div class="text-2xl text-center md:text-left">
+    <div class="text-2xl text-center">
         <h2 class="mt-10">Тестовый Laravel стенд
             <span class="whitespace-nowrap"><img src="/img/cat.png"
                                                  class="inline max-h-[3rem] mx-2"/>Сергея Бакланова</span>
@@ -76,6 +76,12 @@
         <p><a href="https://github.com/nyosru/2602test_laravel" target="_blank" class="underline text-blue-600">
                 GitHub код этого сайта со всеми блоками
             </a></p>
+    </div>
+
+
+    <div class="mt-4 mx-auto shadows-md bg-gradient-to-br from-yellow-200 to-yellow-100 p-4 rounded-xl w-[80%]">Что в этой площадке уже интересного использую:
+    <br/>
+    два разных Swagger для ручных тестов API (переключать в свагере справа на верху)
     </div>
 
     <div class="w-full text-lg flex flex-row flex-wrap xitems-center justify-center mt-10">

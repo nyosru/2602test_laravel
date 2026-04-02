@@ -67,12 +67,13 @@
             .test_logistic section {
                 background: white;
                 border-radius: 18px;
-                padding: 32px;
+                padding: 12px;
                 border: 1px solid rgba(46, 125, 255, 0.08);
                 box-shadow: 0 16px 40px rgba(31, 36, 48, 0.08);
                 display: flex;
                 flex-direction: column;
                 gap: 18px;
+                margin-top: 20px;
             }
 
 
