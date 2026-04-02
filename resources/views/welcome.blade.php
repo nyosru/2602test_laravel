@@ -83,7 +83,7 @@
     <br/>
     два разных Swagger для ручных тестов API (переключать в свагере справа на верху) payment и logistic
         <br/>
-        ci/cd используя github action (автопубликация изменений на сервер и оповещение приходит в группу vk.com )
+        ci/cd использую github action (автопубликация изменений на сервер и оповещение приходит в группу vk.com )
     </div>
 
     <div class="w-full text-lg flex flex-row flex-wrap xitems-center justify-center mt-10">
