@@ -247,17 +247,7 @@
 
             <p class="font-bold text-gray-900">Ответ:</p>
 
-            {{--                <div class="aspect-w-16 aspect-h-12 shadow-xl rounded-lg overflow-hidden">--}}
-            <iframe
-                src="https://vkvideo.ru/video_ext.php?oid=-73827323&id=456239023&hash=198d61ff7b00ab6c&hd=1"
-                width="640"
-                height="360"
-                allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;"
-                frameborder="0"
-                allowfullscreen
-                {{--                        class="w-full h-full"--}}
-            ></iframe>
-            {{--                </div>--}}
+            <iframe src="https://vkvideo.ru/video_ext.php?oid=-73827323&id=456239023&hash=198d61ff7b00ab6c" width="426" height="240" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe>
         </div>
 
     </div>
