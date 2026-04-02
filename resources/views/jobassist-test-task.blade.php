@@ -1,4 +1,4 @@
-<main>
+<main class="test_logistic">
 
     <div class="container mx-auto">
         <style>
@@ -63,6 +63,19 @@
                 margin-top: 4px;
             }
 
+
+            .test_logistic section {
+                background: var(--card-bg);
+                border-radius: 18px;
+                padding: 32px;
+                border: 1px solid rgba(46, 125, 255, 0.08);
+                box-shadow: 0 16px 40px rgba(31, 36, 48, 0.08);
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+            }
+
+
             .actions {
                 display: flex;
                 flex-wrap: wrap;
@@ -72,13 +85,13 @@
 
         </style>
 
-        <header>
+        <section aria-labelledby="context">
             <h1>Тестовое задание</h1>
             <p class="lead">
                 Реализуйте минимальный API бронирования слотов с горячим кешем и защитой от оверсела.
                 Ниже — подробный бриф с требованиями и ожидаемыми результатами.
             </p>
-        </header>
+        </section>
 
         <section aria-labelledby="context">
             <h2 id="context">📘 Контекст</h2>
