@@ -2,20 +2,6 @@
 
     <div class="container mx-auto">
         <style>
-            :root {
-                color-scheme: light dark;
-                --max-width: 960px;
-                --accent: #2e7dff;
-                --bg: #f5f6f9;
-                --card-bg: #ffffff;
-                --text: #1f2430;
-                --muted: #5b667c;
-            }
-
-            * {
-                box-sizing: border-box;
-            }
-
 
             p.lead {
                 margin: 0 auto;
@@ -83,44 +69,7 @@
                 gap: 12px;
             }
 
-            a {
-                color: var(--accent);
-            }
 
-            a.cta {
-                display: inline-flex;
-                align-items: center;
-                gap: 10px;
-                padding: 14px 22px;
-                border-radius: 12px;
-                background: var(--accent);
-                color: #fff;
-                text-decoration: none;
-                font-weight: 600;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-            }
-
-            a.cta:hover,
-            a.cta:focus-visible {
-                transform: translateY(-2px);
-                box-shadow: 0 16px 24px rgba(46, 125, 255, 0.28);
-            }
-
-            footer {
-                text-align: center;
-                color: var(--muted);
-                font-size: 14px;
-            }
-
-            @media (max-width: 720px) {
-                body {
-                    padding: 24px 12px;
-                }
-
-                section {
-                    padding: 24px;
-                }
-            }
         </style>
 
         <header>
