@@ -92,17 +92,6 @@
      w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
         min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
-            <b>Доп. страница Jobassist</b>
-
-            <p><a href="/jobassist-test-task" target="_blank" class="underline text-blue-600">Открыть страницу задания</a></p>
-            <p>Отдельная страница с воссозданием макета из внешнего тестового задания.</p>
-
-        </div>
-
-        <div class="
-     w-full sm:w-1/2 lg:w-1/3 xl:w-1/4
-        min-h-[150px] p-4 bg-white rounded-lg border-2 border-gray-200 shadow-sm">
-            <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Модель Товары + API + swager</b>
 
             <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger index</a>
