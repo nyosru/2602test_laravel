@@ -81,9 +81,9 @@
 
     <div class="mt-4 mx-auto shadows-md bg-gradient-to-br from-yellow-200 to-yellow-100 p-4 rounded-xl w-[80%]">Что в этой площадке уже интересного использую:
     <br/>
-    два разных Swagger для ручных тестов API (переключать в свагере справа на верху) payment и logistic
+    + два разных Swagger для ручных тестов API (переключать в свагере справа на верху) payment и logistic
         <br/>
-        ci/cd использую github action (автопубликация изменений на сервер и оповещение приходит в группу vk.com )
+       + ci/cd использую github action (автопубликация изменений на сервер и оповещение приходит в группу vk.com )
     </div>
 
     <div class="w-full text-lg flex flex-row flex-wrap xitems-center justify-center mt-10">
