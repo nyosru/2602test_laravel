@@ -65,7 +65,7 @@
 
 
             .test_logistic section {
-                background: var(--card-bg);
+                background: white;
                 border-radius: 18px;
                 padding: 32px;
                 border: 1px solid rgba(46, 125, 255, 0.08);
