@@ -10,8 +10,9 @@ linter-show:
 
 
 swagger:
-	@echo "Генерирую оба swagger: index и logistic"
+	@echo "Генерирую все swagger: index, payments и logistic"
 	php artisan l5-swagger:generate index
+	php artisan l5-swagger:generate payments
 	php artisan l5-swagger:generate logistic
 
 s: swagger
@@ -23,6 +24,10 @@ swagger-index:
 swagger-logistic:
 	@echo "Генерирую swagger logistic, смотреть тут /api/documentation/logistic"
 	php artisan l5-swagger:generate logistic
+
+swagger-payments:
+	@echo "Генерирую swagger payments, смотреть тут /api/documentation/payments"
+	php artisan l5-swagger:generate payments
 
 seed:
 	@printf "\033[37;44m%s\033[0m\n" " clean db and засеиваем рандомными данными базу "

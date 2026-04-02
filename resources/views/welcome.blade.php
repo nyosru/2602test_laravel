@@ -81,7 +81,7 @@
 
     <div class="mt-4 mx-auto shadows-md bg-gradient-to-br from-yellow-200 to-yellow-100 p-4 rounded-xl w-[80%]">Что в этой площадке уже интересного использую:
     <br/>
-    + два разных Swagger для ручных тестов API (переключать в свагере справа на верху) payment и logistic
+    + три разных Swagger для ручных тестов API: index, payments и logistic
         <br/>
        + ci/cd использую github action (автопубликация изменений на сервер и оповещение приходит в группу vk.com )
     </div>
@@ -94,7 +94,7 @@
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Модель Товары + API + swager</b>
 
-            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger index</a>
+            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Swagger index</a>
                 покликать API,
                 ключевая модель Product (остальные прицепом появились из&nbsp;других тест
                 заданий), слоёная структура проекта контроллер, сервис, репозиторий</p>
@@ -108,7 +108,7 @@
 
             <b>Модель Payment + API + swager</b>
 
-            <p><a href="/api/documentation" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger index</a>
+            <p><a href="/api/documentation/payments" target="_blank" class="underline text-blue-600">Swagger payments</a>
 
                 <br/>
 
@@ -151,7 +151,7 @@
             <span class="float-right bg-green-400 p-1 rounded">Готово</span>
             <b>Logistic API + swagger</b>
 
-            <p><a href="/api/documentation/logistic" target="_blank" class="underline text-blue-600">Переход в&nbsp;swagger logistic</a></p>
+            <p><a href="/api/documentation/logistic" target="_blank" class="underline text-blue-600">Swagger logistic</a></p>
             <p>Отдельная документация для логистического модуля со слотами, удержаниями, подтверждением и отменой hold.</p>
             <p>В проект добавлены контроллеры, сервис, модели, миграции и feature-тесты из тестового logistic-стенда.</p>
             <p><a href="#logistick" class="underline text-blue-600">Задание и видео лайв кодинга (смотреть на x5))</a></p>

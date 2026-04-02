@@ -32,14 +32,40 @@ return [
 
                 // Absolute paths to directory containing the swagger annotations are stored.
                 'annotations' => [
-                    app_path('Http/Controllers'),
-                    app_path('Http/Controllers/Api'),
+                    app_path('Http/Controllers/Api/ProductController.php'),
+                    app_path('Http/Controllers/Api/TestController.php'),
                     app_path('Http/Controllers/Api/Auth'),
                     app_path('Http/Requests'),
                     app_path('Http/Resources'),
                     app_path('OpenApi/Schemas'),
                     app_path('OpenApi/ApiInfo.php'),
                     app_path('OpenApi/Schemas.php'),
+                ],
+            ],
+        ],
+        'payments' => [
+            'api' => [
+                'title' => 'Payments API',
+            ],
+
+            'routes' => [
+                'api' => 'api/documentation/payments',
+                'docs' => 'docs/payments',
+                'oauth2_callback' => 'api/oauth2-callback/payments',
+            ],
+
+            'paths' => [
+                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
+                'docs_json' => 'payments-api-docs.json',
+                'docs_yaml' => 'payments-api-docs.yaml',
+                'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
+                'annotations' => [
+                    app_path('Http/Controllers/Api/PaymentController.php'),
+                    app_path('OpenApi/Payments'),
+                    app_path('OpenApi/Schemas/ApiResponseSchemas.php'),
+                    app_path('OpenApi/Schemas/ErrorSchemas.php'),
+                    app_path('OpenApi/Schemas/PaymentResponseSchemas.php'),
                 ],
             ],
         ],
