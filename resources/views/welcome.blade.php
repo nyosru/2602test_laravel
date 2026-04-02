@@ -176,7 +176,7 @@
                 <b>GitHub</b>
             </div>
             <img src="/img/github.png" class="float-left w-1/4 mr-2"/>
-            <p><a href="https://github.com/nyosru" class="underline text-blue-600" target="_blank">репозитории в
+            <p><a href="https://github.com/nyosru" class="underline text-blue-600" target="_blank">204 репозитория в
                     GitHub</a></p>
             <p>весь код хранится в&nbsp;гите, автоматизация ci/cd экономят массу времени для&nbsp;обновления
                 протестированного кода на&nbsp;серверах в&nbsp;тест и&nbsp;прод окружении</p>
